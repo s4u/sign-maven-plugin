@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PGPKeyInfo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Sign Maven Plugin</a> &gt; <a href="index.source.html" class="el_package">org.simplify4u.plugins.sign.openpgp</a> &gt; <span class="el_source">PGPKeyInfo.java</span></div><h1>PGPKeyInfo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2020 Slawomir Jaranowski
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.simplify4u.plugins.sign.openpgp;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.Optional;
+
+import io.vavr.control.Try;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.experimental.FieldDefaults;
+
+/**
+ * Information about pgp key.
+ *
+ * @author Slawomir Jaranowski
+ */
+
+@Getter
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+public final class PGPKeyInfo {
+
+    private static final String SIGN_KEY_ENV = &quot;SIGN_KEY&quot;;
+    private static final String SIGN_KEY_PASS_ENV = &quot;SIGN_KEY_PASS&quot;;
+
+    Long id;
+    char[] pass;
+    InputStream key;
+
+    @Builder
+<span class="fc" id="L50">    private PGPKeyInfo(String keyId, String keyPass, File keyFile) {</span>
+
+<span class="fc" id="L52">        id = Optional.ofNullable(keyId)</span>
+<span class="fc" id="L53">                .map(PGPKeyInfo::parseKeyId)</span>
+<span class="fc" id="L54">                .orElse(null);</span>
+
+<span class="fc" id="L56">        pass = Optional.ofNullable(Optional.ofNullable(System.getenv(SIGN_KEY_PASS_ENV)).orElse(keyPass))</span>
+<span class="fc" id="L57">                .map(String::toCharArray)</span>
+<span class="fc" id="L58">                .orElse(null);</span>
+
+<span class="fc" id="L60">        key = Optional.ofNullable(System.getenv(SIGN_KEY_ENV))</span>
+<span class="fc" id="L61">                .map(String::trim)</span>
+<span class="fc" id="L62">                .map(PGPKeyInfo::keyFromString)</span>
+<span class="fc" id="L63">                .orElseGet(() -&gt; keyFromFile(keyFile));</span>
+<span class="fc" id="L64">    }</span>
+
+    private static InputStream keyFromFile(File keyFile) {
+
+<span class="pc bpc" id="L68" title="1 of 2 branches missed.">        if (!keyFile.exists()) {</span>
+<span class="nc" id="L69">            throw new PGPSignerException(&quot;key file: &quot; + keyFile + &quot; not exist&quot;);</span>
+        }
+
+<span class="fc" id="L72">        return Try.of(() -&gt; Files.readAllBytes(keyFile.toPath()))</span>
+<span class="fc" id="L73">                .map(ByteArrayInputStream::new)</span>
+<span class="fc" id="L74">                .getOrElseThrow(PGPSignerException::new);</span>
+    }
+
+    private static InputStream keyFromString(String key) {
+<span class="fc" id="L78">        return new ByteArrayInputStream(key.getBytes(StandardCharsets.US_ASCII));</span>
+    }
+
+    private static long parseKeyId(String key) {
+<span class="fc" id="L82">        return Try.of(() -&gt; new BigInteger(key, 16))</span>
+<span class="fc" id="L83">                .map(BigInteger::longValue)</span>
+<span class="fc" id="L84">                .getOrElseThrow(e -&gt; new PGPSignerException(&quot;Invalid keyId: &quot; + e.getMessage()));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

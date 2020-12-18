@@ -1,0 +1,7 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Sign Maven Plugin,org.simplify4u.plugins.sign.openpgp,PGPSignerException,8,0,0,0,4,0,2,0,2,0
+Sign Maven Plugin,org.simplify4u.plugins.sign.openpgp,PGPKeyInfo,34,74,1,1,2,19,3,6,2,6
+Sign Maven Plugin,org.simplify4u.plugins.sign.openpgp,PGPSigner,29,190,8,10,7,44,7,8,0,6
+Sign Maven Plugin,org.simplify4u.plugins.sign,SignMojo,31,271,2,12,6,68,2,13,0,8
+Sign Maven Plugin,org.simplify4u.plugins.sign,HelpMojo,893,0,110,0,159,0,71,0,16,0
+Sign Maven Plugin,org.simplify4u.plugins.sign,SignMojoException,8,0,0,0,4,0,2,0,2,0
