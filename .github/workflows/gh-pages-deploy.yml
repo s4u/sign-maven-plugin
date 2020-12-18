@@ -1,0 +1,42 @@
+name: GitHub Pages
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  site-deploy:
+    name: Maven Site - Deploy
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2.3.4
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key:          maven-site-deploy-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-site-deploy-
+
+      - uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 8
+
+      - uses: s4u/maven-settings-action@v2.2.0
+        with:
+          sonatypeSnapshots: true
+          properties: |
+            [
+              {"username": "git"},
+              {"password": "${{ secrets.TECH_TOKEN }}"},
+              {"scmpublish.pubScmUrl": "scm:git:${{ github.event.repository.url}}"},
+              {"scmpublish.dryRun": "false"}
+            ]
+
+      - run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Action"
+
+      - run: mvn --no-transfer-progress site-deploy

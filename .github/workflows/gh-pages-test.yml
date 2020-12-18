@@ -1,0 +1,36 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches-ignore:
+      - 'dependabot/**'
+    tags:
+
+  pull_request:
+    branches:
+      - 'master'
+
+jobs:
+  site-test:
+    name: Maven Site - Test
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2.3.4
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key:          maven-site-test-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-site-test-
+
+      - uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 8
+
+      - uses: s4u/maven-settings-action@v2.2.0
+        with:
+          sonatypeSnapshots: true
+
+      - run: mvn --no-transfer-progress site
