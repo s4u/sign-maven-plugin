@@ -1,0 +1,18 @@
+version: 2
+
+updates:
+  - package-ecosystem: maven
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: org.apache.maven:maven-artifact
+        versions:
+          - "> 3.6.0"
+      - dependency-name: org.apache.maven:maven-core
+        versions:
+          - "> 3.6.0"
+      - dependency-name: org.apache.maven:maven-plugin-api
+        versions:
+          - "> 3.6.0"
