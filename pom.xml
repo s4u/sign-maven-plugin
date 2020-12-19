@@ -364,6 +364,18 @@
 
     <profiles>
         <profile>
+            <!-- https://junit-pioneer.org/docs/environment-variables -->
+            <!-- https://github.com/junit-pioneer/junit-pioneer/issues/387 -->
+            <id>jmv-9+</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <argLine>--add-opens=java.base/java.util=ALL-UNNAMED</argLine>
+            </properties>
+        </profile>
+
+        <profile>
             <!-- does some action if maven.test.skip == true -->
             <id>not-testing</id>
             <activation>
