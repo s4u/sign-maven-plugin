@@ -77,6 +77,7 @@
         <slf4j-api.version>1.7.30</slf4j-api.version>
         <junit.version>5.7.0</junit.version>
         <project.build.outputTimestamp>2020-12-16T20:00:00Z</project.build.outputTimestamp>
+        <_argLine/>
     </properties>
 
     <dependencyManagement>
@@ -259,97 +260,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>unpack-maven4</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.apache.maven</groupId>
-                                    <artifactId>apache-maven</artifactId>
-                                    <version>4.0.0-alpha-1-SNAPSHOT</version>
-                                    <type>zip</type>
-                                    <classifier>bin</classifier>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.directory}/maven4</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>it-tests-public-key</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/keys-cache/BC/06</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/test/resources/BC/06</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-invoker-plugin</artifactId>
-                <configuration>
-                    <pomIncludes>
-                        <pomInclude>*/pom-test.xml</pomInclude>
-                    </pomIncludes>
-                    <settingsFile>src/it/settings.xml</settingsFile>
-                    <showErrors>true</showErrors>
-                    <showVersion>true</showVersion>
-                    <mavenOpts>${argLine}</mavenOpts>
-                    <filterProperties>
-                        <mavenOpts>${argLine}</mavenOpts>
-                    </filterProperties>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>invoker-tests-maven3</id>
-                        <goals>
-                            <goal>install</goal>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <cloneProjectsTo>${project.build.directory}/it3</cloneProjectsTo>
-                            <localRepositoryPath>${project.build.directory}/it3-repo</localRepositoryPath>
-                            <reportsDirectory>${project.build.directory}/invoker-reports3</reportsDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>invoker-tests-maven4</id>
-                        <goals>
-                            <goal>install</goal>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <cloneProjectsTo>${project.build.directory}/it4</cloneProjectsTo>
-                            <localRepositoryPath>${project.build.directory}/it4-repo</localRepositoryPath>
-                            <reportsDirectory>${project.build.directory}/invoker-reports4</reportsDirectory>
-                            <mavenHome>${project.build.directory}/maven4/apache-maven</mavenHome>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
@@ -371,17 +281,17 @@
                 <jdk>[9,)</jdk>
             </activation>
             <properties>
-                <argLine>--add-opens=java.base/java.util=ALL-UNNAMED</argLine>
+                <_argLine>--add-opens=java.base/java.util=ALL-UNNAMED</_argLine>
             </properties>
         </profile>
 
         <profile>
-            <!-- does some action if maven.test.skip == true -->
-            <id>not-testing</id>
+            <!-- when maven.test.skip is set we skip integration tests -->
+            <id>integration-testing</id>
             <activation>
                 <property>
                     <name>maven.test.skip</name>
-                    <value>true</value>
+                    <value>!true</value>
                 </property>
             </activation>
 
@@ -389,11 +299,33 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>${_argLine} @{argLine}</argLine>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>unpack-maven4</id>
-                                <phase>none</phase>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.apache.maven</groupId>
+                                            <artifactId>apache-maven</artifactId>
+                                            <version>4.0.0-alpha-1-SNAPSHOT</version>
+                                            <type>zip</type>
+                                            <classifier>bin</classifier>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}/maven4</outputDirectory>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -403,21 +335,63 @@
                         <executions>
                             <execution>
                                 <id>it-tests-public-key</id>
-                                <phase>none</phase>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/keys-cache/BC/06</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>src/test/resources/BC/06</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-invoker-plugin</artifactId>
+                        <configuration>
+                            <pomIncludes>
+                                <pomInclude>*/pom-test.xml</pomInclude>
+                            </pomIncludes>
+                            <settingsFile>src/it/settings.xml</settingsFile>
+                            <showErrors>true</showErrors>
+                            <showVersion>true</showVersion>
+                            <mavenOpts>${_argLine} ${argLine}</mavenOpts>
+                            <filterProperties>
+                                <mavenOpts>${_argLine} ${argLine}</mavenOpts>
+                            </filterProperties>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>invoker-tests-maven3</id>
-                                <phase>none</phase>
+                                <goals>
+                                    <goal>install</goal>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <cloneProjectsTo>${project.build.directory}/it3</cloneProjectsTo>
+                                    <localRepositoryPath>${project.build.directory}/it3-repo</localRepositoryPath>
+                                    <reportsDirectory>${project.build.directory}/invoker-reports3</reportsDirectory>
+                                </configuration>
                             </execution>
                             <execution>
                                 <id>invoker-tests-maven4</id>
-                                <phase>none</phase>
+                                <goals>
+                                    <goal>install</goal>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <cloneProjectsTo>${project.build.directory}/it4</cloneProjectsTo>
+                                    <localRepositoryPath>${project.build.directory}/it4-repo</localRepositoryPath>
+                                    <reportsDirectory>${project.build.directory}/invoker-reports4</reportsDirectory>
+                                    <mavenHome>${project.build.directory}/maven4/apache-maven</mavenHome>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
