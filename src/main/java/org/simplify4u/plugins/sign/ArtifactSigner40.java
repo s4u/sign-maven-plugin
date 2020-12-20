@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -31,12 +30,17 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
 import org.eclipse.aether.transform.FileTransformer;
 
+/**
+ * Artifact signer - implementation for Maven &gt;= 3.7.0
+ *
+ * @author Slawomir Jaranowski
+ */
 @Slf4j
 @Named
 public class ArtifactSigner40 extends ArtifactSigner {
 
     @Inject
-    MavenSession session;
+    private MavenSession session;
 
     @Override
     public List<SignResult> signArtifact(Artifact artifact) {

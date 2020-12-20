@@ -17,6 +17,7 @@ package org.simplify4u.plugins.sign;
 
 import java.io.File;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -32,6 +33,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.simplify4u.plugins.sign.openpgp.PGPSignerKeyNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
 class SignMojoTest {
@@ -51,9 +53,39 @@ class SignMojoTest {
     @Test
     void skipExecution() {
 
+        //given
         mojo.setSkip(true);
+
+        // when
         mojo.execute();
 
+        // then
+        verifyNoInteractions(artifactSignerFactory, artifactSigner, project);
+    }
+
+    @Test
+    void noExistingKeyShouldSkipExecution() {
+        // given
+        mojo.setSkipNoKey(true);
+        mojo.setKeyFile(new File("no-existing-key.asc"));
+
+        // when
+        mojo.execute();
+
+        //then
+        verifyNoInteractions(artifactSignerFactory, artifactSigner, project);
+    }
+
+    @Test
+    void noExistingKeyShouldBreakExecution() {
+        // given
+        mojo.setSkipNoKey(false);
+        mojo.setKeyFile(new File("no-existing-key.asc"));
+
+        // when - then
+        assertThatThrownBy(() -> mojo.execute())
+                .isExactlyInstanceOf(PGPSignerKeyNotFoundException.class)
+                .hasMessage("key file: no-existing-key.asc not found");
         verifyNoInteractions(artifactSignerFactory, artifactSigner, project);
     }
 

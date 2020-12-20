@@ -33,6 +33,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.project.artifact.ProjectArtifact;
 import org.simplify4u.plugins.sign.openpgp.PGPKeyInfo;
+import org.simplify4u.plugins.sign.openpgp.PGPSignerKeyNotFoundException;
 
 /**
  * Creates OpenPGP signatures for all of the project's artifacts.
@@ -93,10 +94,23 @@ public class SignMojo extends AbstractMojo {
 
     /**
      * Skip the execution of plugin.
+     *
+     * @since 0.1.0
      */
     @Setter(AccessLevel.PACKAGE)
     @Parameter(property = "sign.skip", defaultValue = "false")
     private boolean skip;
+
+    /**
+     * Skip the execution of plugin if private key is missing.
+     * <p>
+     * In other case error will be reported for current Maven session.
+     *
+     * @since 0.1.0
+     */
+    @Setter(AccessLevel.PACKAGE)
+    @Parameter(property = "sign.skipNoKey", defaultValue = "false")
+    private boolean skipNoKey;
 
     @Override
     public void execute() {
@@ -106,11 +120,21 @@ public class SignMojo extends AbstractMojo {
             return;
         }
 
-        PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyId(keyId)
-                .keyPass(keyPass)
-                .keyFile(keyFile)
-                .build();
+        PGPKeyInfo keyInfo;
+        try {
+            keyInfo = PGPKeyInfo.builder()
+                    .keyId(keyId)
+                    .keyPass(keyPass)
+                    .keyFile(keyFile)
+                    .build();
+        } catch (PGPSignerKeyNotFoundException e) {
+            if (skipNoKey) {
+                LOGGER.info("Sign - key not found - skip execution");
+                return;
+            } else {
+                throw e;
+            }
+        }
 
         ArtifactSigner artifactSigner = artifactSignerFactory.getSigner(keyInfo);
 
