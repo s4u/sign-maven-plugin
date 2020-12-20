@@ -51,7 +51,7 @@ import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
  */
 @Slf4j
 @Named
-public final class PGPSigner {
+public class PGPSigner {
 
     private PGPKeyInfo pgpKeyInfo;
 

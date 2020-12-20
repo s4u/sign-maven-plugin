@@ -37,7 +37,7 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public final class PGPKeyInfo {
+public class PGPKeyInfo {
 
     private static final String SIGN_KEY_ENV = "SIGN_KEY";
     private static final String SIGN_KEY_PASS_ENV = "SIGN_KEY_PASS";
