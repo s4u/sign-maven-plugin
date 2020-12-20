@@ -27,14 +27,29 @@ import org.apache.maven.project.MavenProject;
 import org.simplify4u.plugins.sign.openpgp.PGPKeyInfo;
 import org.simplify4u.plugins.sign.openpgp.PGPSigner;
 
+/**
+ * Common implementation for signing artifacts.
+ *
+ * @author Slawomir Jaranowski
+ */
 public abstract class ArtifactSigner {
 
+    /**
+     * current Maven project
+     */
     @Inject
-    MavenProject project;
+    protected MavenProject project;
 
+    /**
+     * signer to produce pgp signature
+     */
     @Inject
     protected PGPSigner pgpSigner;
 
+    /**
+     * Check if artifact has correct data.
+     * @param artifact an artifact to sign
+     */
     protected static void verifyArtifact(Artifact artifact) {
 
         if (artifact == null) {

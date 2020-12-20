@@ -23,6 +23,8 @@ import org.simplify4u.plugins.sign.openpgp.PGPKeyInfo;
 
 /**
  * Return ArtifactSigner depends on Maven version.
+ *
+ * @author Slawomir Jaranowski
  */
 @Named
 public class ArtifactSignerFactory {

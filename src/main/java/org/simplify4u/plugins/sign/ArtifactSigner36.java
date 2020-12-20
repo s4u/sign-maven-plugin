@@ -21,12 +21,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
-
 import javax.inject.Named;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.artifact.Artifact;
 
+/**
+ * Artifact signer - implementation for Maven &gt;= 3.6.x and &lt;3.7.0
+ *
+ * @author Slawomir Jaranowski
+ */
 @Slf4j
 @Named
 public class ArtifactSigner36 extends ArtifactSigner {

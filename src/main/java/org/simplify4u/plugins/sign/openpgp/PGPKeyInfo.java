@@ -66,7 +66,7 @@ public class PGPKeyInfo {
     private static InputStream keyFromFile(File keyFile) {
 
         if (!keyFile.exists()) {
-            throw new PGPSignerException("key file: " + keyFile + " not exist");
+            throw new PGPSignerKeyNotFoundException("key file: " + keyFile + " not found");
         }
 
         return Try.of(() -> Files.readAllBytes(keyFile.toPath()))
