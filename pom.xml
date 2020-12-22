@@ -77,7 +77,6 @@
         <slf4j-api.version>1.7.30</slf4j-api.version>
         <junit.version>5.7.0</junit.version>
         <project.build.outputTimestamp>2020-12-16T20:00:00Z</project.build.outputTimestamp>
-        <_argLine/>
     </properties>
 
     <dependencyManagement>
@@ -281,7 +280,7 @@
                 <jdk>[9,)</jdk>
             </activation>
             <properties>
-                <_argLine>--add-opens=java.base/java.util=ALL-UNNAMED</_argLine>
+                <argLine>--add-opens=java.base/java.util=ALL-UNNAMED</argLine>
             </properties>
         </profile>
 
@@ -297,13 +296,6 @@
 
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <argLine>${_argLine} @{argLine}</argLine>
-                        </configuration>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
@@ -360,10 +352,6 @@
                             <settingsFile>src/it/settings.xml</settingsFile>
                             <showErrors>true</showErrors>
                             <showVersion>true</showVersion>
-                            <mavenOpts>${_argLine} ${argLine}</mavenOpts>
-                            <filterProperties>
-                                <mavenOpts>${_argLine} ${argLine}</mavenOpts>
-                            </filterProperties>
                         </configuration>
                         <executions>
                             <execution>
