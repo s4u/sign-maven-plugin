@@ -68,15 +68,16 @@ class PGPKeyInfoTest {
 
     @Test
     @SetEnvironmentVariable(key = "SIGN_KEY", value = "signKey from environment")
+    @SetEnvironmentVariable(key = "SIGN_KEY_ID", value = KEY_ID_STR)
     @SetEnvironmentVariable(key = "SIGN_KEY_PASS", value = KEY_PASS_STR)
-    void keyAndPassFromEnv() {
+    void keyDataFromEnv() {
 
         // when
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
                 .build();
 
         // then
-        assertThat(keyInfo.getId()).isNull();
+        assertThat(keyInfo.getId()).isEqualTo(KEY_ID);
         assertThat(keyInfo.getPass()).isEqualTo(KEY_PASS);
         assertThat(keyInfo.getKey()).hasContent("signKey from environment");
     }

@@ -57,6 +57,8 @@ public class SignMojo extends AbstractMojo {
     /**
      * <p><code>keyId</code> used for signing. If not provided first key from <code>keyFile</code> will be taken.</p>
      *
+     * <p>This value can be delivered by environment variable <code>SIGN_KEY_ID</code>.</p>
+     *
      * @since 0.1.0
      */
     @Parameter(property = "sign.keyId")
