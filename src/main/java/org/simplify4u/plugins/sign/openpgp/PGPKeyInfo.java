@@ -39,6 +39,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class PGPKeyInfo {
 
+    private static final String SIGN_KEY_ID_ENV = "SIGN_KEY_ID";
     private static final String SIGN_KEY_ENV = "SIGN_KEY";
     private static final String SIGN_KEY_PASS_ENV = "SIGN_KEY_PASS";
 
@@ -49,7 +50,7 @@ public class PGPKeyInfo {
     @Builder
     private PGPKeyInfo(String keyId, String keyPass, File keyFile) {
 
-        id = Optional.ofNullable(keyId)
+        id = Optional.ofNullable(Optional.ofNullable(System.getenv(SIGN_KEY_ID_ENV)).orElse(keyId))
                 .map(PGPKeyInfo::parseKeyId)
                 .orElse(null);
 
