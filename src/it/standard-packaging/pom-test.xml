@@ -20,7 +20,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>test-group</groupId>
+    <groupId>test-group-sub</groupId>
     <artifactId>standard-packaging</artifactId>
     <version>${revision}</version>
 
@@ -66,8 +66,7 @@
                             <goal>sign</goal>
                         </goals>
                         <configuration>
-                            <keyPass>testPass</keyPass>
-                            <keyFile>@project.basedir@/src/test/resources/pgp-priv-key.asc</keyFile>
+                            <keyFile>@project.basedir@/src/test/resources/priv-sub-key-no-pass.asc</keyFile>
                         </configuration>
                     </execution>
 

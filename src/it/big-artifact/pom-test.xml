@@ -65,7 +65,7 @@
                         <configuration>
                             <keyId>AC71B3E31C0C0D38</keyId>
                             <keyPass>testPass</keyPass>
-                            <keyFile>@project.basedir@/src/test/resources/pgp-priv-key.asc</keyFile>
+                            <keyFile>@project.basedir@/src/test/resources/priv-key.asc</keyFile>
                         </configuration>
                     </execution>
 

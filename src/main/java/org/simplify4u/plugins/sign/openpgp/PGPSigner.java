@@ -20,10 +20,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
 import javax.inject.Named;
+
+import static org.simplify4u.plugins.sign.openpgp.PGPSecretKeyUtils.getKeyId;
+import static org.simplify4u.plugins.sign.openpgp.PGPSecretKeyUtils.getUserIDs;
+import static org.simplify4u.plugins.sign.openpgp.PGPSecretKeyUtils.keyIdDescription;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.bcpg.ArmoredOutputStream;
@@ -58,6 +61,7 @@ public class PGPSigner {
     private PGPSecretKey secretKey;
     private PGPPrivateKey pgpPrivateKey;
     private PGPSignatureSubpacketVector hashSubPackets;
+    private PGPSecretKeyRing secretKeyRing;
 
     PGPSigner() {
         // empty one
@@ -65,6 +69,7 @@ public class PGPSigner {
 
     /**
      * Setup key info which will be used for signing
+     *
      * @param keyInfo private key info
      */
     public void setKeyInfo(PGPKeyInfo keyInfo) {
@@ -78,9 +83,9 @@ public class PGPSigner {
         }
 
         if (LOGGER.isInfoEnabled()) {
-            List<String> uIds = new ArrayList<>();
-            secretKey.getUserIDs().forEachRemaining(uIds::add);
-            LOGGER.info("Loaded keyId: {}, uIds: {}", String.format("%16X", secretKey.getKeyID()), uIds);
+            LOGGER.info("Loaded {}, uids: {}",
+                    keyIdDescription(secretKey, secretKeyRing),
+                    getUserIDs(secretKey, secretKeyRing));
         }
     }
 
@@ -101,20 +106,20 @@ public class PGPSigner {
                 new JcaKeyFingerprintCalculator());
 
         Long keyId = pgpKeyInfo.getId();
+        Optional<PGPSecretKey> secretKeyOptional;
         if (keyId != null) {
-            secretKey = pgpSecretKeyRingCollection.getSecretKey(keyId);
+            secretKeyOptional = Optional.ofNullable(pgpSecretKeyRingCollection.getSecretKey(keyId));
         } else {
-            // retrieve first master key
-            Iterator<PGPSecretKeyRing> keyRings = pgpSecretKeyRingCollection.getKeyRings();
-            if (keyRings.hasNext()) {
-                PGPSecretKeyRing secretKeys = keyRings.next();
-                secretKey = secretKeys.getSecretKey();
-            }
+            // retrieve first key with private key
+            secretKeyOptional = StreamSupport.stream(pgpSecretKeyRingCollection.spliterator(), false)
+                    .flatMap(k -> StreamSupport.stream(k.spliterator(), false))
+                    .filter(key -> !key.isPrivateKeyEmpty())
+                    .findFirst();
         }
 
-        if (secretKey == null) {
-            throw new PGPSignerException("Secret key not found");
-        }
+        secretKey = secretKeyOptional.orElseThrow(() -> new PGPSignerException("Secret key not found"));
+
+        secretKeyRing = pgpSecretKeyRingCollection.getSecretKeyRing(secretKey.getKeyID());
 
         if (secretKey.getKeyEncryptionAlgorithm() == SymmetricKeyAlgorithmTags.NULL && pgpKeyInfo.getPass() != null) {
             LOGGER.warn("Plain secret key - password is not needed");
@@ -122,6 +127,10 @@ public class PGPSigner {
 
         if (secretKey.getKeyEncryptionAlgorithm() != SymmetricKeyAlgorithmTags.NULL && pgpKeyInfo.getPass() == null) {
             throw new PGPSignerException("Secret key is encrypted - keyPass is required");
+        }
+
+        if (secretKey.isPrivateKeyEmpty()) {
+            throw new PGPSignerException("Private key not found for keyId: " + getKeyId(secretKey));
         }
 
         pgpPrivateKey = secretKey
@@ -139,7 +148,7 @@ public class PGPSigner {
     public void sign(InputStream inputStream, Path outputPath) {
 
         PGPSignatureGenerator sGen = new PGPSignatureGenerator(
-                new JcaPGPContentSignerBuilder(secretKey.getPublicKey().getAlgorithm(), HashAlgorithmTags.SHA256));
+                new JcaPGPContentSignerBuilder(secretKey.getPublicKey().getAlgorithm(), HashAlgorithmTags.SHA512));
 
         try {
             sGen.init(PGPSignature.BINARY_DOCUMENT, pgpPrivateKey);
