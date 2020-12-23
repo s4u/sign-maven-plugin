@@ -308,6 +308,9 @@
                                 </goals>
                                 <configuration>
                                     <artifactItems>
+                                        <!--
+                                        https://repository.apache.org/content/groups/snapshots/org/apache/maven/maven/
+                                        -->
                                         <artifactItem>
                                             <groupId>org.apache.maven</groupId>
                                             <artifactId>apache-maven</artifactId>
@@ -332,10 +335,10 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/keys-cache/BC/06</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/keys-cache</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>src/test/resources/BC/06</directory>
+                                            <directory>src/test/resources/public-keys</directory>
                                         </resource>
                                     </resources>
                                 </configuration>

@@ -34,7 +34,7 @@ class PGPSignerTest {
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
                 .keyId("AC71B3E31C0C0D38")
                 .keyPass("testPass")
-                .keyFile(new File(getClass().getResource("/pgp-priv-key.asc").getFile()))
+                .keyFile(new File(getClass().getResource("/priv-key.asc").getFile()))
                 .build();
 
 
@@ -49,7 +49,7 @@ class PGPSignerTest {
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
                 .keyPass("testPass")
-                .keyFile(new File(getClass().getResource("/pgp-priv-key.asc").getFile()))
+                .keyFile(new File(getClass().getResource("/priv-key.asc").getFile()))
                 .build();
 
 
@@ -63,7 +63,7 @@ class PGPSignerTest {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyFile(new File(getClass().getResource("/pgp-priv-key-no-pass.asc").getFile()))
+                .keyFile(new File(getClass().getResource("/priv-key-no-pass.asc").getFile()))
                 .build();
 
 
@@ -73,12 +73,42 @@ class PGPSignerTest {
     }
 
     @Test
+    void loadSubKeyWithOutPass() throws PGPSignerException {
+
+        // given
+        PGPKeyInfo keyInfo = PGPKeyInfo.builder()
+                .keyFile(new File(getClass().getResource("/priv-sub-key-no-pass.asc").getFile()))
+                .build();
+
+
+        // when
+        assertThatCode(() -> pgpSigner.setKeyInfo(keyInfo))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void loadSubKeyWithMasterKey() throws PGPSignerException {
+
+        // given
+        PGPKeyInfo keyInfo = PGPKeyInfo.builder()
+                .keyId("73593FDED8C63A19")
+                .keyFile(new File(getClass().getResource("/priv-sub-key-no-pass.asc").getFile()))
+                .build();
+
+
+        // when
+        assertThatThrownBy(() -> pgpSigner.setKeyInfo(keyInfo))
+                .isExactlyInstanceOf(PGPSignerException.class)
+                .hasMessage("Private key not found for keyId: 73593FDED8C63A19");
+    }
+
+    @Test
     void keyWithOutPassButPassGiven() throws PGPSignerException {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
                 .keyPass("testPass")
-                .keyFile(new File(getClass().getResource("/pgp-priv-key-no-pass.asc").getFile()))
+                .keyFile(new File(getClass().getResource("/priv-key-no-pass.asc").getFile()))
                 .build();
 
 
@@ -92,7 +122,7 @@ class PGPSignerTest {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyFile(new File(getClass().getResource("/pgp-priv-key.asc").getFile()))
+                .keyFile(new File(getClass().getResource("/priv-key.asc").getFile()))
                 .build();
 
 
@@ -109,7 +139,7 @@ class PGPSignerTest {
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
                 .keyPass("xxx")
-                .keyFile(new File(getClass().getResource("/pgp-priv-key.asc").getFile()))
+                .keyFile(new File(getClass().getResource("/priv-key.asc").getFile()))
                 .build();
 
 

@@ -104,7 +104,7 @@ class SignMojoTest {
             when(artifactSignerFactory.getSigner(any())).thenReturn(artifactSigner);
 
             //setup default values of mojo
-            mojo.setKeyFile(new File(getClass().getResource("/pgp-priv-key-no-pass.asc").getFile()));
+            mojo.setKeyFile(new File(getClass().getResource("/priv-key-no-pass.asc").getFile()));
         }
 
         @Test

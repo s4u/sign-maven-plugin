@@ -33,7 +33,7 @@ class PGPKeyInfoTest {
     private static final String KEY_PASS_STR = "pass";
     private static final char[] KEY_PASS = KEY_PASS_STR.toCharArray();
 
-    private static final File KEY_FILE = new File(PGPKeyInfo.class.getResource("/pgp-priv-key-no-pass.asc").getFile());
+    private static final File KEY_FILE = new File(PGPKeyInfo.class.getResource("/priv-key-no-pass.asc").getFile());
 
     @Test
     void keyFromFileAllPropertiesSet() throws FileNotFoundException {
