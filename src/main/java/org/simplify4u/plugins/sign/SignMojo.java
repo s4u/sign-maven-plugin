@@ -104,14 +104,14 @@ public class SignMojo extends AbstractMojo {
     private boolean skip;
 
     /**
-     * Skip the execution of plugin if private key is missing.
+     * By default execution is skipped if private key is missing.
      * <p>
-     * In other case error will be reported for current Maven session.
+     * When set to <code>false</code> and private key is missing error will be reported for current Maven session.
      *
      * @since 0.1.0
      */
     @Setter(AccessLevel.PACKAGE)
-    @Parameter(property = "sign.skipNoKey", defaultValue = "false")
+    @Parameter(property = "sign.skipNoKey", defaultValue = "true")
     private boolean skipNoKey;
 
     @Override
