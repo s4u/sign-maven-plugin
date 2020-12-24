@@ -91,7 +91,7 @@ class PGPSignerTest {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyId("73593FDED8C63A19")
+                .keyId("0C5CEA1C96038404")
                 .keyFile(new File(getClass().getResource("/priv-sub-key-no-pass.asc").getFile()))
                 .build();
 
@@ -99,7 +99,7 @@ class PGPSignerTest {
         // when
         assertThatThrownBy(() -> pgpSigner.setKeyInfo(keyInfo))
                 .isExactlyInstanceOf(PGPSignerException.class)
-                .hasMessage("Private key not found for keyId: 73593FDED8C63A19");
+                .hasMessage("Private key not found for keyId: 0C5CEA1C96038404");
     }
 
     @Test

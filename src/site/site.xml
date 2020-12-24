@@ -22,6 +22,7 @@
         <menu name="Overview">
             <item name="Introduction" href="index.html"/>
             <item name="Goals" href="plugin-info.html"/>
+            <item name="Private key preparation" href="key-prepare.html"/>
         </menu>
 
     </body>

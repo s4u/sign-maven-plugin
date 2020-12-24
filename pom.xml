@@ -32,7 +32,10 @@
     <packaging>maven-plugin</packaging>
 
     <name>Sign Maven Plugin</name>
-    <description>Creates OpenPGP signatures for all of the project's artifacts</description>
+    <description>
+        Creates OpenPGP signatures for all of the project's artifacts
+        without any external software
+    </description>
     <url>https://www.simplify4u.org/sign-maven-plugin</url>
     <inceptionYear>2020</inceptionYear>
 

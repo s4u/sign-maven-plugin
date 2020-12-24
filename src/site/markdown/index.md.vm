@@ -1,8 +1,13 @@
 Introduction
 ============
 
-`Sign Maven Plugin` allows you to create OpenPGP signatures for all of the project's artifacts,
+`Sign Maven Plugin` allows you to creates OpenPGP signatures for all of the project's artifacts
 without any external software.
 
-All the signing operations are done using `Bouncy Castle`.
+# Feature
+
+- all the signing operations are done using `Bouncy Castle`
+- support Maven `3.6` and is ready for next version `3.7/4.0` of Maven  with `Consumer POM`
+- support `subkey` for signing
+- easy to use on CI system, configuration can be provided by environment variables 
 

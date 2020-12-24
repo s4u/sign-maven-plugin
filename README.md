@@ -11,14 +11,12 @@ without any external software.
 
  - all the signing operations are done using `Bouncy Castle`
  - support Maven `3.6` and is ready for next version `3.7/4.0` of Maven  with `Consumer POM`
+ - support `subkey` for signing
  - easy to use on CI system, configuration can be provided by environment variables 
 
 # Key prepare
-
-    gpg --full-generate-key
-    gpg --list-secret-keys
-    gpg --armor --export-secret-keys
-    gpg --armor --export 
+    
+Please look at our [tutorial](src/site/markdown/key-prepare.md)
 
 # Usage
 ```xml
@@ -46,4 +44,4 @@ without any external software.
 ```
 # Testing latest snapshot version
 
-Each build of current version of is deployed to sonatype snapshots repository.
+Each build of current version is deployed to sonatype snapshots repository.

@@ -15,4 +15,4 @@
 #
 
 test-group      = 0xBC065DCAA903A7785FF79E6EAC71B3E31C0C0D38
-test-group-sub  = 0xF6A2666F8A3B4AF014BCA4B973593FDED8C63A19 # master key fingerprint
+test-group-sub  = 0x92BBFA4603B33BC283068CA40C5CEA1C96038404 # master key fingerprint

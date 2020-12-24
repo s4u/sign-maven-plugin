@@ -45,7 +45,7 @@ public final class PGPSecretKeyUtils {
      * @return keyId in hex format
      */
     public static String getKeyId(PGPSecretKey secretKey) {
-        return String.format("%16X", secretKey.getKeyID());
+        return String.format("%016X", secretKey.getKeyID());
     }
 
     /**
