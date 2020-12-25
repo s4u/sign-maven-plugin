@@ -5,6 +5,7 @@ on:
     branches-ignore:
       - 'dependabot/**'
     tags:
+      - 'v*'
 
   schedule:
     - cron: '55 5 * * 5'
@@ -13,7 +14,9 @@ jobs:
 
   verify:
     name: Build ${{ matrix.os }} jdk${{ matrix.java }}
-    if: startsWith( github.event.head_commit.message , '[maven-release-plugin] prepare release') != true
+    if: |
+      startsWith(github.ref, 'refs/tags/')
+      || !startsWith(github.event.head_commit.message , '[maven-release-plugin] prepare release')
 
     runs-on: ${{ matrix.os }}
 
@@ -22,16 +25,15 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
         java: [ 8, 11, 15 ]
-        exclude:
-          - os: ubuntu-latest
-            java: 11
 
     steps:
       - uses: actions/checkout@v2.3.4
 
       - uses: actions/cache@v2.1.3
         with:
-          path: ~/.m2/repository
+          path: |
+            ~/.m2/repository
+            ~/.sonar/cache
           key: ${{ matrix.os }}-jdk${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ matrix.os }}-jdk${{ matrix.java }}-
 
@@ -45,51 +47,47 @@ jobs:
 
       - run: mvn verify
 
-  sonar:
-    name: Build Sonar ubuntu-latest jdk11
-    if: startsWith( github.event.head_commit.message , '[maven-release-plugin] prepare release') != true
+      - run: mvn sonar:sonar -Dsonar.branch.name=${GITHUB_REF#refs/heads/} -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        if: >
+          matrix.os == 'ubuntu-latest'
+          && matrix.java == '11'
+          && github.repository_owner == 's4u'
+          && startsWith( github.ref, 'refs/heads/')
 
-    needs: verify
+  site-test:
+    name: Maven Site - Test
 
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2.3.4
-        with:
-          fetch-depth: 0
 
       - uses: actions/cache@v2.1.3
         with:
-          path: |
-            ~/.m2/repository
-            ~/.sonar/cache
-          key: ubuntu-latest-jdk11-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ubuntu-latest-jdk11-
+          path: ~/.m2/repository
+          key: maven-site-test-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-site-test-
 
       - uses: actions/setup-java@v1.4.3
         with:
-          java-version: 11
+          java-version: 8
 
-      - uses: s4u/maven-settings-action@v2.3.0
+      - uses: s4u/maven-settings-action@v2.2.0
         with:
           sonatypeSnapshots: true
-          properties: '[{"sonar.login": "${env.SONAR_TOKEN}"}]'
 
-      - run: mvn verify
-
-      - run: mvn sonar:sonar -Dsonar.branch.name=${GITHUB_REF#refs/heads/}
-        if: github.repository_owner == 's4u'
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - run: mvn --no-transfer-progress site
 
   deploy:
     name: Build Deploy ubuntu-latest jdk8
     if: >
-      startsWith( github.event.head_commit.message , '[maven-release-plugin] prepare release') != true
-      && github.repository_owner == 's4u'
-      && github.ref == 'refs/heads/master'
+      github.repository_owner == 's4u'
+      && (
+        startsWith(github.ref, 'refs/tags/')
+        || ( github.ref == 'refs/heads/master' && !startsWith(github.event.head_commit.message , '[maven-release-plugin] prepare release') )
+      )
 
-    needs: sonar
+    needs: [ verify, site-test ]
 
     runs-on: ubuntu-latest
 
@@ -115,3 +113,42 @@ jobs:
         env:
           OSS_USER: ${{ secrets.OSS_USER }}
           OSS_PASS: ${{ secrets.OSS_PASS }}
+          SIGN_KEY: ${{ secrets.SIGN_KEY }}
+
+  site-deploy:
+    name: Maven Site - Deploy
+    if: github.repository_owner == 's4u' && startsWith(github.ref, 'refs/tags/')
+
+    needs: deploy
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2.3.4
+
+      - uses: actions/cache@v2.1.3
+        with:
+          path: ~/.m2/repository
+          key: maven-site-deploy-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-site-deploy-
+
+      - uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 8
+
+      - uses: s4u/maven-settings-action@v2.3.0
+        with:
+          sonatypeSnapshots: true
+          properties: |
+            [
+              {"username": "git"},
+              {"password": "${{ secrets.TECH_TOKEN }}"},
+              {"scmpublish.pubScmUrl": "scm:git:${{ github.event.repository.url}}"},
+              {"scmpublish.dryRun": "false"}
+            ]
+
+      - run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Action"
+
+      - run: mvn --no-transfer-progress site-deploy
