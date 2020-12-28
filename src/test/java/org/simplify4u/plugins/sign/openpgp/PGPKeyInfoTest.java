@@ -108,4 +108,18 @@ class PGPKeyInfoTest {
                 .hasMessageStartingWith("Invalid keyId: For input string: \"xxx\"")
                 .hasNoCause();
     }
+
+    @Test
+    @SetEnvironmentVariable(key = "SIGN_KEY", value = "signKey from environment")
+    @SetEnvironmentVariable(key = "SIGN_KEY_ID", value = "null")
+    void nullStringInEnvironmentValueShouldBeFiltered() {
+        // when
+        PGPKeyInfo keyInfo = PGPKeyInfo.builder()
+                .build();
+
+        // then
+        assertThat(keyInfo.getId()).isNull();
+        assertThat(keyInfo.getPass()).isNull();
+        assertThat(keyInfo.getKey()).hasContent("signKey from environment");
+    }
 }
