@@ -2,8 +2,8 @@
 
 ## Used software
 
-For this tutorial I used `GnuPG` on `Mac OS`, but GnuPG on other system should be ok.
-If you have special requirements on different operating system or different software,
+For this tutorial I used `GnuPG` on `Mac OS`, but GnuPG on other system should be ok, too.
+If you have special requirements on a different operating system or different software,
 please create issues or PR with clarification. 
 
 ```shell
@@ -45,18 +45,18 @@ For signing we need only key with flag `[S]`, so we export only one specific key
 gpg --armor --export-secret-keys 0C5CEA1C96038404!
 ```
 
-output of this command you can store in `~/.m2/sign-key.asc` or set as `SING_KEY` environment variable.
+output of this command you can store in `~/.m2/sign-key.asc` or set as `SIGN_KEY` environment variable.
 
-`sing-maven-plugin` by default will try load private key from this place.
+`sign-maven-plugin` by default will try load private key from this place.
 
 ## Creating a new subkey
 
-`sing-maven-plugin` support signing by `subkey` instead of master key.
+`sign-maven-plugin` supports signing by `subkey` instead of master key.
 
-There are many articles explaining what is `subkeys` and those advantage and disadvantage, 
-so please look for it yourself if you not familiar with `subkeys`
+There are many articles explaining what `subkeys` is and its advantages and disadvantages, 
+so please look for it yourself if you're not familiar with `subkeys`.
 
-We have master key, so we need edit it
+We have master key, so we need to edit it
 
 ```shell
 gpg --edit-key 0C5CEA1C96038404
@@ -84,16 +84,15 @@ So we can export this `subkey`  (exclamation after `keyId` is important)
 gpg --armor --export-secret-subkeys 8F56B3C83F55E1A3!
 ```
 
-Like for master key you can store your `subkey` in `~/.m2/sign-key.asc` or set as `SING_KEY` environment variable.
+Like for master key you can store your `subkey` in `~/.m2/sign-key.asc` or set as `SIGN_KEY` environment variable.
 
 
 ## Publishing public key 
 
-Finally, you should publish your master public key to keys server network 
-in order to make possibility to verify your signatures by other.
+Finally, you should publish your master public key to a keys server network 
+in order to make it possibile to verify your signatures by others.
 
 eg:
 ```shell
 gpg --keyserver hkps://hkps.pool.sks-keyservers.net --send-key 0C5CEA1C96038404
 ```
-
