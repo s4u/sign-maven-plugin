@@ -16,8 +16,8 @@
 package org.simplify4u.plugins.sign.openpgp;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -36,7 +36,7 @@ class PGPKeyInfoTest {
     private static final File KEY_FILE = new File(PGPKeyInfo.class.getResource("/priv-key-no-pass.asc").getFile());
 
     @Test
-    void keyFromFileAllPropertiesSet() throws FileNotFoundException {
+    void keyFromFileAllPropertiesSet() throws IOException {
 
         // when
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
@@ -48,12 +48,12 @@ class PGPKeyInfoTest {
         // then
         assertThat(keyInfo.getId()).isEqualTo(KEY_ID);
         assertThat(keyInfo.getPass()).isEqualTo(KEY_PASS);
-        assertThat(keyInfo.getKey()).hasSameContentAs(new FileInputStream(KEY_FILE));
+        assertThat(keyInfo.getKey()).hasSameContentAs(Files.newInputStream(KEY_FILE.toPath()));
     }
 
 
     @Test
-    void keyFromFile() throws FileNotFoundException {
+    void keyFromFile() throws IOException {
 
         // when
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
@@ -63,7 +63,7 @@ class PGPKeyInfoTest {
         // then
         assertThat(keyInfo.getId()).isNull();
         assertThat(keyInfo.getPass()).isNull();
-        assertThat(keyInfo.getKey()).hasSameContentAs(new FileInputStream(KEY_FILE));
+        assertThat(keyInfo.getKey()).hasSameContentAs(Files.newInputStream(KEY_FILE.toPath()));
     }
 
     @Test
