@@ -48,6 +48,9 @@ jobs:
           sonatypeSnapshots: true
 
       - run: mvn verify
+        env:
+          SIGN_KEY: ${{ secrets.SIGN_KEY }}
+
 
       - run: mvn sonar:sonar -Dsonar.branch.name=${GITHUB_REF#refs/heads/} -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         if: >
