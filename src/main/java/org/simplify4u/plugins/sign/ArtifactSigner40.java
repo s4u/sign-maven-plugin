@@ -16,9 +16,9 @@
 package org.simplify4u.plugins.sign;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -63,7 +63,7 @@ public class ArtifactSigner40 extends ArtifactSigner {
         try {
             if (transformersForArtifact.isEmpty()) {
                 try (InputStream artifactInputStream = new BufferedInputStream(
-                        new FileInputStream(srcArtifact.getFile()))) {
+                        Files.newInputStream(srcArtifact.getFile().toPath()))) {
                     result.add(makeSignature(artifactInputStream,
                             srcArtifact.getArtifactId(),
                             srcArtifact.getClassifier(),
