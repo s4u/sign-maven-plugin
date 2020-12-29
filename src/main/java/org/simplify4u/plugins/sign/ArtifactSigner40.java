@@ -67,6 +67,7 @@ public class ArtifactSigner40 extends ArtifactSigner {
                     result.add(makeSignature(artifactInputStream,
                             srcArtifact.getArtifactId(),
                             srcArtifact.getClassifier(),
+                            srcArtifact.getVersion(),
                             srcArtifact.getExtension()));
                 }
             } else {
@@ -75,6 +76,7 @@ public class ArtifactSigner40 extends ArtifactSigner {
                     result.add(makeSignature(fileTransformer.transformData(srcArtifact.getFile()),
                             dstArtifact.getArtifactId(),
                             dstArtifact.getClassifier(),
+                            dstArtifact.getVersion(),
                             dstArtifact.getExtension()));
                 }
             }

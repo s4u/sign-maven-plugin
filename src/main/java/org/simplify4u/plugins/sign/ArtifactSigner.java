@@ -72,7 +72,8 @@ public abstract class ArtifactSigner {
      * @return result of signing
      */
     protected SignResult makeSignature(InputStream inputStream,
-            String artifactId, String classifier, String extension) {
+            String artifactId, String classifier, String version,
+            String extension) {
 
         String targetExt = extension + ".asc";
 
@@ -80,7 +81,7 @@ public abstract class ArtifactSigner {
         if (classifier != null && !classifier.isEmpty()) {
             targetName += "-" + classifier;
         }
-        targetName += "." + targetExt;
+        targetName += '-' + version + '.' + targetExt;
 
         Path target = Paths.get(project.getBuild().getDirectory(), targetName);
 
