@@ -301,6 +301,18 @@
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludedEnvironmentVariables>
+                                <!-- exclude configuration variable from test environment -->
+                                <excludedVariable>SIGN_KEY</excludedVariable>
+                                <excludedVariable>SIGN_KEY_ID</excludedVariable>
+                                <excludedVariable>SIGN_KEY_PASS</excludedVariable>
+                            </excludedEnvironmentVariables>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
                             <execution>
@@ -358,6 +370,11 @@
                             <settingsFile>src/it/settings.xml</settingsFile>
                             <showErrors>true</showErrors>
                             <showVersion>true</showVersion>
+                            <environmentVariables>
+                                <SIGN_KEY/>
+                                <SIGN_KEY_ID/>
+                                <SIGN_KEY_PASS/>
+                            </environmentVariables>
                         </configuration>
                         <executions>
                             <execution>

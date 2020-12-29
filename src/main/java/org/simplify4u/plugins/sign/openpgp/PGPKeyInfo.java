@@ -50,18 +50,32 @@ public class PGPKeyInfo {
     @Builder
     private PGPKeyInfo(String keyId, String keyPass, File keyFile) {
 
-        id = Optional.ofNullable(Optional.ofNullable(System.getenv(SIGN_KEY_ID_ENV)).orElse(keyId))
+        id = Optional.ofNullable(stringFromEnv(SIGN_KEY_ID_ENV).orElse(keyId))
                 .map(PGPKeyInfo::parseKeyId)
                 .orElse(null);
 
-        pass = Optional.ofNullable(Optional.ofNullable(System.getenv(SIGN_KEY_PASS_ENV)).orElse(keyPass))
+        pass = Optional.ofNullable(stringFromEnv(SIGN_KEY_PASS_ENV).orElse(keyPass))
                 .map(String::toCharArray)
                 .orElse(null);
 
-        key = Optional.ofNullable(System.getenv(SIGN_KEY_ENV))
+        key = stringFromEnv(SIGN_KEY_ENV)
                 .map(String::trim)
                 .map(PGPKeyInfo::keyFromString)
                 .orElseGet(() -> keyFromFile(keyFile));
+    }
+
+    /**
+     * Read environment variable and filter by "null" string - this value is set be invoker-maven-plugin.
+     * <p>
+     * TODO - remove workaround after fix and release https://issues.apache.org/jira/browse/MINVOKER-273
+     *
+     * @param environmentName a environment variable name
+     *
+     * @return content of environment variable or empty if not exist.
+     */
+    private static Optional<String> stringFromEnv(String environmentName) {
+        return Optional.ofNullable(System.getenv(environmentName))
+                .filter(s -> !"null".equals(s));
     }
 
     private static InputStream keyFromFile(File keyFile) {
