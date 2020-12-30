@@ -38,10 +38,15 @@
     <url>https://www.simplify4u.org/sign-maven-plugin</url>
     <inceptionYear>2020</inceptionYear>
 
+    <organization>
+        <name>Simplify4U</name>
+        <url>https://www.simplify4u.org</url>
+    </organization>
+
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
