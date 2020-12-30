@@ -16,6 +16,8 @@
 package org.simplify4u.plugins.sign.openpgp;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Optional;
@@ -45,7 +47,7 @@ public final class PGPSecretKeyUtils {
      * @return keyId in hex format
      */
     public static String getKeyId(PGPSecretKey secretKey) {
-        return String.format("%016X", secretKey.getKeyID());
+        return String.format("0x%016X", secretKey.getKeyID());
     }
 
     /**
@@ -132,5 +134,31 @@ public final class PGPSecretKeyUtils {
             ret.append(String.format("%02X", b));
         }
         return ret.toString();
+    }
+
+    /**
+     * Verify expiration time of secret key.
+     *
+     * @param secretKey     a key to check
+     * @param secretKeyRing a keyRing used for prepare message
+     *
+     * @throws PGPSignerException if key expired
+     */
+    public static void verifyKeyExpiration(PGPSecretKey secretKey, PGPSecretKeyRing secretKeyRing) {
+
+        long validSeconds = secretKey.getPublicKey().getValidSeconds();
+        if (validSeconds > 0) {
+
+            LocalDateTime expireDateTime = secretKey.getPublicKey().getCreationTime()
+                    .toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime()
+                    .plusSeconds(validSeconds);
+
+            if (LocalDateTime.now().isAfter(expireDateTime)) {
+                throw new PGPSignerException(keyIdDescription(secretKey, secretKeyRing)
+                        + " was expired at: " + expireDateTime);
+            }
+        }
     }
 }

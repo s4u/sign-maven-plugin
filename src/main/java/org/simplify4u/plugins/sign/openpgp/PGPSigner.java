@@ -27,6 +27,7 @@ import javax.inject.Named;
 import static org.simplify4u.plugins.sign.openpgp.PGPSecretKeyUtils.getKeyId;
 import static org.simplify4u.plugins.sign.openpgp.PGPSecretKeyUtils.getUserIDs;
 import static org.simplify4u.plugins.sign.openpgp.PGPSecretKeyUtils.keyIdDescription;
+import static org.simplify4u.plugins.sign.openpgp.PGPSecretKeyUtils.verifyKeyExpiration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.bcpg.ArmoredOutputStream;
@@ -132,6 +133,8 @@ public class PGPSigner {
         if (secretKey.isPrivateKeyEmpty()) {
             throw new PGPSignerException("Private key not found for keyId: " + getKeyId(secretKey));
         }
+
+        verifyKeyExpiration(secretKey, secretKeyRing);
 
         pgpPrivateKey = secretKey
                 .extractPrivateKey(new JcePBESecretKeyDecryptorBuilder().build(pgpKeyInfo.getPass()));
