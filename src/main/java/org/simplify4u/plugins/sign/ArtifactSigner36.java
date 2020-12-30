@@ -45,6 +45,7 @@ public class ArtifactSigner36 extends ArtifactSigner {
             return Collections.singletonList(makeSignature(artifactInputStream,
                     artifact.getArtifactId(),
                     artifact.getClassifier(),
+                    artifact.getVersion(),
                     artifact.getArtifactHandler().getExtension()));
         } catch (IOException e) {
             throw new SignMojoException(e);
