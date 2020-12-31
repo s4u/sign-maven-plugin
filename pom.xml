@@ -59,6 +59,14 @@
             <url>https://github.com/slawekjaranowski</url>
             <timezone>Europe/Warsaw</timezone>
         </developer>
+
+        <developer>
+            <id>mkarg</id>
+            <name>Markus Karg</name>
+            <email>markus@headcrashing.eu</email>
+            <url>https://github.com/mkarg</url>
+            <timezone>Europe/Berlin</timezone>
+        </developer>
     </developers>
 
     <prerequisites>
