@@ -16,6 +16,10 @@
 package org.simplify4u.plugins.sign.openpgp;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -99,7 +103,7 @@ class PGPSignerTest {
         // when
         assertThatThrownBy(() -> pgpSigner.setKeyInfo(keyInfo))
                 .isExactlyInstanceOf(PGPSignerException.class)
-                .hasMessage("Private key not found for keyId: 0C5CEA1C96038404");
+                .hasMessage("Private key not found for keyId: 0x0C5CEA1C96038404");
     }
 
     @Test
@@ -148,6 +152,47 @@ class PGPSignerTest {
                 .isExactlyInstanceOf(PGPSignerException.class)
                 .hasRootCauseExactlyInstanceOf(PGPException.class)
                 .hasMessage("org.bouncycastle.openpgp.PGPException: checksum mismatch at 0 of 20");
+    }
+
+    @Test
+    void expiredMasterKeyThrewException() {
+
+        // given
+        LocalDateTime expiredDateTime = ZonedDateTime.of(2020, 12, 23, 7, 29, 20, 0, ZoneOffset.UTC)
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        PGPKeyInfo keyInfo = PGPKeyInfo.builder()
+                .keyId("B09391374A115DE2")
+                .keyFile(new File(getClass().getResource("/priv-expired-key-no-pass.asc").getFile()))
+                .build();
+
+        assertThatThrownBy(() -> pgpSigner.setKeyInfo(keyInfo))
+                .isExactlyInstanceOf(PGPSignerException.class)
+                .hasNoCause()
+                .hasMessage("KeyId: 0xE82078BE6F6368CB593C47C5B09391374A115DE2 was expired at: " + expiredDateTime);
+    }
+
+    @Test
+    void expiredSubKeyThrewException() {
+
+        // given
+        LocalDateTime expiredDateTime = ZonedDateTime.of(2020, 12, 23, 7, 30, 13, 0, ZoneOffset.UTC)
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+
+        PGPKeyInfo keyInfo = PGPKeyInfo.builder()
+                .keyId("44A920F7DCC8A31E")
+                .keyFile(new File(getClass().getResource("/priv-expired-key-no-pass.asc").getFile()))
+                .build();
+
+        assertThatThrownBy(() -> pgpSigner.setKeyInfo(keyInfo))
+                .isExactlyInstanceOf(PGPSignerException.class)
+                .hasNoCause()
+                .hasMessage("SubKeyId: 0x44A920F7DCC8A31E of 0xE82078BE6F6368CB593C47C5B09391374A115DE2 was expired at: "
+                        + expiredDateTime);
     }
 
 }
