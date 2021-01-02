@@ -41,9 +41,9 @@ jobs:
         with:
           sonatypeSnapshots: true
 
-      - run: mvn verify
+      - run: mvn --errors --show-version verify
 
-      - run: mvn sonar:sonar
+      - run: mvn --errors --show-version sonar:sonar
         if: >
           matrix.os == 'ubuntu-latest'
           && matrix.java == '11'
@@ -84,4 +84,4 @@ jobs:
         with:
           sonatypeSnapshots: true
 
-      - run: mvn --no-transfer-progress site
+      - run: mvn --errors --show-version site
