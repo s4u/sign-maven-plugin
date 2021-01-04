@@ -76,12 +76,13 @@ public abstract class ArtifactSigner {
             String extension) {
 
         String targetExt = extension + ".asc";
+        String targetName = artifactId + '-' + version;
 
-        String targetName = artifactId;
         if (classifier != null && !classifier.isEmpty()) {
             targetName += "-" + classifier;
         }
-        targetName += '-' + version + '.' + targetExt;
+
+        targetName += "." + targetExt;
 
         Path target = Paths.get(project.getBuild().getDirectory(), targetName);
 

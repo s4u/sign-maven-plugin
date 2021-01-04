@@ -19,7 +19,7 @@ def target = basedir.toPath().resolve( "target" )
 def pomSignature = target.resolve( "standard-packaging-1.1.1.pom.asc" )
 def jarSignature = target.resolve( "standard-packaging-1.1.1.jar.asc" )
 def datSignature = target.resolve( "standard-packaging-1.1.1.dat.asc" )
-def c1DatSignature = target.resolve( "standard-packaging-c1-1.1.1.dat.asc" )
+def c1DatSignature = target.resolve( "standard-packaging-1.1.1-c1.dat.asc" )
 
 assert Files.exists( pomSignature )
 assert Files.exists( jarSignature )
