@@ -60,6 +60,10 @@ jobs:
               "sonar.scm.revision": "${{ github.event.pull_request.head.sha }}"
             }
 
+      - name: clear NODE_OPTIONS
+        run: echo "NODE_OPTIONS=" >> $GITHUB_ENV
+        shell: bash
+
   site-test:
     name: Maven Site - Test
 
@@ -87,3 +91,7 @@ jobs:
           sonatypeSnapshots: true
 
       - run: mvn --errors --show-version site
+
+      - name: clear NODE_OPTIONS
+        run: echo "NODE_OPTIONS=" >> $GITHUB_ENV
+        shell: bash
