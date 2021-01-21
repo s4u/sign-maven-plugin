@@ -122,4 +122,18 @@ class PGPKeyInfoTest {
         assertThat(keyInfo.getPass()).isNull();
         assertThat(keyInfo.getKey()).hasContent("signKey from environment");
     }
+
+    @Test
+    void passDecryptorShouldBeCalled() {
+
+        // when
+        PGPKeyInfo keyInfo = PGPKeyInfo.builder()
+                .passDecryptor(String::toUpperCase)
+                .keyPass(KEY_PASS_STR)
+                .keyFile(KEY_FILE)
+                .build();
+
+        // then
+        assertThat(keyInfo.getPass()).isEqualTo(KEY_PASS_STR.toUpperCase().toCharArray());
+    }
 }

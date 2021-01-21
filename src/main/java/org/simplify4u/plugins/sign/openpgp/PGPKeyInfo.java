@@ -22,6 +22,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Optional;
+import java.util.function.UnaryOperator;
 
 import io.vavr.control.Try;
 import lombok.AccessLevel;
@@ -48,13 +49,14 @@ public class PGPKeyInfo {
     InputStream key;
 
     @Builder
-    private PGPKeyInfo(String keyId, String keyPass, File keyFile) {
+    private PGPKeyInfo(String keyId, String keyPass, File keyFile, UnaryOperator<String> passDecryptor) {
 
         id = Optional.ofNullable(stringFromEnv(SIGN_KEY_ID_ENV).orElse(keyId))
                 .map(PGPKeyInfo::parseKeyId)
                 .orElse(null);
 
         pass = Optional.ofNullable(stringFromEnv(SIGN_KEY_PASS_ENV).orElse(keyPass))
+                .map(Optional.ofNullable(passDecryptor).orElseGet(UnaryOperator::identity))
                 .map(String::toCharArray)
                 .orElse(null);
 

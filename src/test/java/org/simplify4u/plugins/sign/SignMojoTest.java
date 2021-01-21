@@ -34,6 +34,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.simplify4u.plugins.sign.openpgp.PGPSignerKeyNotFoundException;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 
 @ExtendWith(MockitoExtension.class)
 class SignMojoTest {
@@ -46,6 +47,9 @@ class SignMojoTest {
 
     @Mock
     private ArtifactSignerFactory artifactSignerFactory;
+
+    @Mock
+    private SecDispatcher secDispatcher;
 
     @InjectMocks
     private SignMojo mojo;
@@ -60,7 +64,7 @@ class SignMojoTest {
         mojo.execute();
 
         // then
-        verifyNoInteractions(artifactSignerFactory, artifactSigner, project);
+        verifyNoInteractions(artifactSignerFactory, artifactSigner, secDispatcher, project);
     }
 
     @Test
@@ -73,7 +77,7 @@ class SignMojoTest {
         mojo.execute();
 
         //then
-        verifyNoInteractions(artifactSignerFactory, artifactSigner, project);
+        verifyNoInteractions(artifactSignerFactory, artifactSigner, secDispatcher, project);
     }
 
     @Test
@@ -86,7 +90,8 @@ class SignMojoTest {
         assertThatThrownBy(() -> mojo.execute())
                 .isExactlyInstanceOf(PGPSignerKeyNotFoundException.class)
                 .hasMessage("key file: no-existing-key.asc not found");
-        verifyNoInteractions(artifactSignerFactory, artifactSigner, project);
+
+        verifyNoInteractions(artifactSignerFactory, artifactSigner, secDispatcher, project);
     }
 
     @Nested
@@ -113,6 +118,17 @@ class SignMojoTest {
             mojo.execute();
 
             verify(artifactSigner).signArtifact(any());
+            verifyNoInteractions(secDispatcher);
+        }
+
+        @Test
+        void executeWithPassword() throws Exception {
+
+            mojo.setKeyPass("keyPass");
+            mojo.execute();
+
+            verify(artifactSigner).signArtifact(any());
+            verify(secDispatcher).decrypt("keyPass");
         }
     }
 

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 
+import io.vavr.control.Try;
 import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.project.artifact.ProjectArtifact;
 import org.simplify4u.plugins.sign.openpgp.PGPKeyInfo;
 import org.simplify4u.plugins.sign.openpgp.PGPSignerKeyNotFoundException;
+import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 
 /**
  * Creates OpenPGP signatures for all of the project's artifacts.
@@ -54,6 +56,9 @@ public class SignMojo extends AbstractMojo {
     @Inject
     private ArtifactSignerFactory artifactSignerFactory;
 
+    @Inject
+    private SecDispatcher secDispatcher;
+
     /**
      * <p><code>keyId</code> used for signing. If not provided first key from <code>keyFile</code> will be taken.</p>
      *
@@ -67,12 +72,16 @@ public class SignMojo extends AbstractMojo {
     /**
      * <p><code>passphrase</code> to decrypt private signing key.</p>
      *
+     * <p>Can be encrypted by standard Maven
+     * <a href="https://maven.apache.org/guides/mini/guide-encryption.html">Password Encryption</a></p>
+     *
      * <p>Provided key can be stored in plain text, in this case <code>keyPass</code> can be empty.</p>
      *
      * <p>This value can be delivered by environment variable <code>SIGN_KEY_PASS</code>.</p>
      *
      * @since 0.1.0
      */
+    @Setter(AccessLevel.PACKAGE)
     @Parameter(property = "sign.keyPass")
     private String keyPass;
 
@@ -125,6 +134,7 @@ public class SignMojo extends AbstractMojo {
         PGPKeyInfo keyInfo;
         try {
             keyInfo = PGPKeyInfo.builder()
+                    .passDecryptor(this::decryptPass)
                     .keyId(keyId)
                     .keyPass(keyPass)
                     .keyFile(keyFile)
@@ -152,6 +162,11 @@ public class SignMojo extends AbstractMojo {
                 .map(artifactSigner::signArtifact)
                 .flatMap(List::stream)
                 .forEach(this::attachSignResult);
+    }
+
+    private String decryptPass(String pass) {
+        return Try.of(() -> secDispatcher.decrypt(pass))
+                .getOrElseThrow(e -> new SignMojoException("Invalid encrypted password", e));
     }
 
     /**
