@@ -8,12 +8,15 @@
 Creates OpenPGP signatures for all of the project's artifacts
 without any external software.
 
+This plugin can replace **maven-gpg-plugin** in easy way and give you new feature.
+
 # Feature 
 
  - all the signing operations are done using `Bouncy Castle`
  - support Maven `3.6` and is ready for next version `3.7/4.0` of Maven  with `Consumer POM`
  - support `subkey` for signing
- - easy to use on CI system, configuration can be provided by environment variables 
+ - easy to use on CI system, configuration can be provided by environment variables
+ - key passphrase can be encrypted by standard Maven [Password Encryption](https://maven.apache.org/guides/mini/guide-encryption.html)
 
 # Key prepare
     

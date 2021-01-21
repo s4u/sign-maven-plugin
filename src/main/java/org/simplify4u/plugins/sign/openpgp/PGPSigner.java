@@ -49,7 +49,7 @@ import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentSignerBuilder;
 import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
 
 /**
- * Signig data by PGP.
+ * Signing data by PGP.
  *
  * @author Slawomir Jaranowski
  */

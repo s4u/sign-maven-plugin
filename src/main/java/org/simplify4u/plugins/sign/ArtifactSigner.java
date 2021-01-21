@@ -48,6 +48,7 @@ public abstract class ArtifactSigner {
 
     /**
      * Check if artifact has correct data.
+     *
      * @param artifact an artifact to sign
      */
     protected static void verifyArtifact(Artifact artifact) {
@@ -67,6 +68,7 @@ public abstract class ArtifactSigner {
      * @param inputStream data to sign
      * @param artifactId  used for build filename
      * @param classifier  used for build filename
+     * @param version     used for build filename
      * @param extension   used for build filename
      *
      * @return result of signing
@@ -93,6 +95,7 @@ public abstract class ArtifactSigner {
 
     /**
      * Setup signarer with key configuration
+     *
      * @param pgpKeyInfo a private key configuration
      */
     public void setKeyInfo(PGPKeyInfo pgpKeyInfo) {
