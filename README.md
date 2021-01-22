@@ -1,6 +1,8 @@
 # Sign Maven Plugin 
 [![Build](https://github.com/s4u/sign-maven-plugin/workflows/Build/badge.svg)](https://github.com/s4u/sign-maven-plugin/actions?query=workflow%3ABuild)
+[![Reproducible Builds](https://img.shields.io/badge/Reproducible_Builds-ok-success?labelColor=1e5b96)](https://github.com/jvm-repo-rebuild/reproducible-central#org.simplify4u.plugins:sign-maven-plugin)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.simplify4u.plugins/sign-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.simplify4u.plugins/sign-maven-plugin)
+
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=org.simplify4u.plugins%3Asign-maven-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.simplify4u.plugins%3Asign-maven-plugin)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=org.simplify4u.plugins%3Asign-maven-plugin&metric=coverage)](https://sonarcloud.io/dashboard?id=org.simplify4u.plugins%3Asign-maven-plugin)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=org.simplify4u.plugins%3Asign-maven-plugin&metric=ncloc)](https://sonarcloud.io/dashboard?id=org.simplify4u.plugins%3Asign-maven-plugin)
