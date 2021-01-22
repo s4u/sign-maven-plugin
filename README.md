@@ -8,7 +8,7 @@
 Creates OpenPGP signatures for all of the project's artifacts
 without any external software.
 
-This plugin can replace **maven-gpg-plugin** in easy way and give you new feature.
+This plugin can replace **maven-gpg-plugin** in an easy way and provide new features.
 
 # Feature 
 

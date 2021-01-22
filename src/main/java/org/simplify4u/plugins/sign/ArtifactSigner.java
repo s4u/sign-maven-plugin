@@ -66,10 +66,10 @@ public abstract class ArtifactSigner {
      * Sign given input stream. In result we will have file with signature.
      *
      * @param inputStream data to sign
-     * @param artifactId  used for build filename
-     * @param classifier  used for build filename
-     * @param version     used for build filename
-     * @param extension   used for build filename
+     * @param artifactId  used for built filename
+     * @param classifier  used for built filename
+     * @param version     used for built filename
+     * @param extension   used for built filename
      *
      * @return result of signing
      */
