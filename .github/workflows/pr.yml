@@ -26,7 +26,7 @@ jobs:
           token: ${{ secrets.READONLY_TOKEN }}
           ref: 'refs/pull/${{ github.event.number }}/merge'
 
-      - uses: actions/cache@v2.1.3
+      - uses: actions/cache@v2.1.4
         with:
           path: |
             ~/.m2/repository
@@ -76,7 +76,7 @@ jobs:
           token: ${{ secrets.READONLY_TOKEN }}
           ref: 'refs/pull/${{ github.event.number }}/merge'
 
-      - uses: actions/cache@v2.1.3
+      - uses: actions/cache@v2.1.4
         with:
           path: ~/.m2/repository
           key: maven-site-test-${{ hashFiles('**/pom.xml') }}
