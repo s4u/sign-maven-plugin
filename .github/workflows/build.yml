@@ -43,7 +43,7 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
 
-      - uses: s4u/maven-settings-action@v2.3.0
+      - uses: s4u/maven-settings-action@v2.4.0
         with:
           sonatypeSnapshots: true
 
@@ -80,7 +80,7 @@ jobs:
         with:
           java-version: 8
 
-      - uses: s4u/maven-settings-action@v2.2.0
+      - uses: s4u/maven-settings-action@v2.4.0
         with:
           sonatypeSnapshots: true
 
@@ -112,7 +112,7 @@ jobs:
         with:
           java-version: 8
 
-      - uses: s4u/maven-settings-action@v2.3.0
+      - uses: s4u/maven-settings-action@v2.4.0
         with:
           sonatypeSnapshots: true
           servers: '[{"id": "ossrh", "username": "${env.OSS_USER}", "password": "${env.OSS_PASS}"}]'
@@ -144,7 +144,7 @@ jobs:
         with:
           java-version: 8
 
-      - uses: s4u/maven-settings-action@v2.3.0
+      - uses: s4u/maven-settings-action@v2.4.0
         with:
           sonatypeSnapshots: true
           properties: |
