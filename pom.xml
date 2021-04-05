@@ -27,7 +27,7 @@
 
     <groupId>org.simplify4u.plugins</groupId>
     <artifactId>sign-maven-plugin</artifactId>
-    <version>0.3.1-SNAPSHOT</version>
+    <version>0.3.1</version>
     <packaging>maven-plugin</packaging>
 
     <name>Sign Maven Plugin</name>
@@ -77,7 +77,7 @@
         <connection>scm:git:git@github.com:s4u/sign-maven-plugin.git</connection>
         <developerConnection>${project.scm.connection}</developerConnection>
         <url>https://github.com/s4u/sign-maven-plugin</url>
-        <tag>HEAD</tag>
+        <tag>v0.3.1</tag>
     </scm>
 
     <distributionManagement>
@@ -91,7 +91,7 @@
         <maven.version>3.6.0</maven.version>
         <slf4j-api.version>1.7.30</slf4j-api.version>
         <junit.version>5.7.0</junit.version>
-        <project.build.outputTimestamp>2021-01-22T21:57:47Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2021-04-05T19:46:49Z</project.build.outputTimestamp>
     </properties>
 
     <dependencyManagement>
@@ -402,9 +402,9 @@
                             <showErrors>true</showErrors>
                             <showVersion>true</showVersion>
                             <environmentVariables>
-                                <SIGN_KEY/>
-                                <SIGN_KEY_ID/>
-                                <SIGN_KEY_PASS/>
+                                <SIGN_KEY />
+                                <SIGN_KEY_ID />
+                                <SIGN_KEY_PASS />
                             </environmentVariables>
                         </configuration>
                         <executions>
