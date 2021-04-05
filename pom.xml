@@ -296,6 +296,17 @@
 
     <profiles>
         <profile>
+            <id>ci-system</id>
+            <activation>
+                <property>
+                    <name>env.CI</name>
+                </property>
+            </activation>
+            <properties>
+                <invoker.streamLogsOnFailures>true</invoker.streamLogsOnFailures>
+            </properties>
+        </profile>
+        <profile>
             <!-- https://junit-pioneer.org/docs/environment-variables -->
             <!-- https://github.com/junit-pioneer/junit-pioneer/issues/387 -->
             <id>jmv-9+</id>
@@ -391,9 +402,9 @@
                             <showErrors>true</showErrors>
                             <showVersion>true</showVersion>
                             <environmentVariables>
-                                <SIGN_KEY />
-                                <SIGN_KEY_ID />
-                                <SIGN_KEY_PASS />
+                                <SIGN_KEY/>
+                                <SIGN_KEY_ID/>
+                                <SIGN_KEY_PASS/>
                             </environmentVariables>
                         </configuration>
                         <executions>
