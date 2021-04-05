@@ -48,7 +48,7 @@ public class ArtifactSignerFactory {
     public ArtifactSigner getSigner(PGPKeyInfo pgpKeyInfo) {
 
         ArtifactSigner artifactSigner;
-        if (rtInfo.isMavenVersion("[3.7.0,)")) {
+        if (rtInfo.isMavenVersion("[4.0.0-alpha-0,)")) {
             artifactSigner = artifactSigner40;
         } else {
             artifactSigner = artifactSigner36;

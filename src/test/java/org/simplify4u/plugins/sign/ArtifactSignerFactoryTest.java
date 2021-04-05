@@ -49,7 +49,7 @@ class ArtifactSignerFactoryTest {
     @Test
     void maven36() {
         // given
-        when(rtInfo.isMavenVersion("[3.7.0,)")).thenReturn(false);
+        when(rtInfo.isMavenVersion("[4.0.0-alpha-0,)")).thenReturn(false);
 
         // whwn
         ArtifactSigner signer = artifactSignerFactory.getSigner(keyInfo);
@@ -63,7 +63,7 @@ class ArtifactSignerFactoryTest {
     @Test
     void maven40() {
         // given
-        when(rtInfo.isMavenVersion("[3.7.0,)")).thenReturn(true);
+        when(rtInfo.isMavenVersion("[4.0.0-alpha-0,)")).thenReturn(true);
 
         // whwn
         ArtifactSigner signer = artifactSignerFactory.getSigner(keyInfo);
