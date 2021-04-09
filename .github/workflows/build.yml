@@ -39,9 +39,10 @@ jobs:
           key: ${{ matrix.os }}-jdk${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ matrix.os }}-jdk${{ matrix.java }}-
 
-      - uses: actions/setup-java@v1.4.3
+      - uses: actions/setup-java@v2.0.0
         with:
           java-version: ${{ matrix.java }}
+          distribution: 'adopt'
 
       - uses: s4u/maven-settings-action@v2.4.0
         with:
@@ -52,12 +53,14 @@ jobs:
           SIGN_KEY: ${{ secrets.SIGN_KEY }}
 
 
-      - run: mvn --errors --show-version sonar:sonar -Dsonar.branch.name=${GITHUB_REF#refs/heads/} -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      - run: mvn --errors --show-version sonar:sonar -Dsonar.branch.name=${GITHUB_REF#refs/heads/}
         if: >
           matrix.os == 'ubuntu-latest'
           && matrix.java == '11'
           && github.repository_owner == 's4u'
           && startsWith( github.ref, 'refs/heads/')
+        env:
+          SONARQUBE_SCANNER_PARAMS: '{"sonar.login": "2de0e32b2b3108965f76a4713ba2028978c233ed"}'
 
   site-test:
     name: Maven Site - Test
@@ -76,9 +79,10 @@ jobs:
           key: maven-site-test-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-site-test-
 
-      - uses: actions/setup-java@v1.4.3
+      - uses: actions/setup-java@v2.0.0
         with:
           java-version: 8
+          distribution: 'adopt'
 
       - uses: s4u/maven-settings-action@v2.4.0
         with:
@@ -108,9 +112,10 @@ jobs:
           key: deploy-ubuntu-latest-jdk8-${{ hashFiles('**/pom.xml') }}
           restore-keys: deploy-ubuntu-latest-jdk8-
 
-      - uses: actions/setup-java@v1.4.3
+      - uses: actions/setup-java@v2.0.0
         with:
           java-version: 8
+          distribution: 'adopt'
 
       - uses: s4u/maven-settings-action@v2.4.0
         with:
@@ -140,9 +145,10 @@ jobs:
           key: maven-site-deploy-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-site-deploy-
 
-      - uses: actions/setup-java@v1.4.3
+      - uses: actions/setup-java@v2.0.0
         with:
           java-version: 8
+          distribution: 'adopt'
 
       - uses: s4u/maven-settings-action@v2.4.0
         with:
