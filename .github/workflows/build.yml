@@ -92,6 +92,8 @@ jobs:
 
   deploy:
     name: Build Deploy ubuntu-latest jdk8
+    concurrency: maven-deploy
+
     if: >
       github.repository_owner == 's4u'
       && (
@@ -130,6 +132,7 @@ jobs:
 
   site-deploy:
     name: Maven Site - Deploy
+    concurrency: site-deploy
     if: github.repository_owner == 's4u' && startsWith(github.ref, 'refs/tags/')
 
     needs: deploy
@@ -169,6 +172,8 @@ jobs:
 
   publish-release:
     name: Publish Release
+    concurrency: release-drafter
+
     if: github.repository_owner == 's4u' && startsWith(github.ref, 'refs/tags/')
 
     needs: site-deploy

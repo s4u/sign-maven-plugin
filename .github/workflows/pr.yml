@@ -5,6 +5,10 @@ on:
     branches:
       - 'master'
 
+concurrency:
+  group: pr-${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
 
   verify:
