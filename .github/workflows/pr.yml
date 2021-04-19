@@ -17,10 +17,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
-        java: [ 8, 11, 16, 17-ea ]
+        java: [ 8, 11, 16 ]
 
     steps:
       - uses: actions/checkout@v2.3.4
