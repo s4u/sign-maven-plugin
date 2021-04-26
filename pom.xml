@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.simplify4u</groupId>
         <artifactId>parent</artifactId>
-        <version>2.11.1</version>
+        <version>2.12.0</version>
         <relativePath />
     </parent>
 
@@ -92,6 +92,9 @@
         <slf4j-api.version>1.7.30</slf4j-api.version>
         <junit.version>5.7.0</junit.version>
         <project.build.outputTimestamp>2021-04-05T19:46:57Z</project.build.outputTimestamp>
+
+        <!-- default value is needed when jacoco is not executed -->
+        <argLine/>
     </properties>
 
     <dependencyManagement>
@@ -314,7 +317,9 @@
                 <jdk>[9,)</jdk>
             </activation>
             <properties>
-                <argLine>--add-opens=java.base/java.util=ALL-UNNAMED</argLine>
+                <opens.util>--add-opens=java.base/java.util=ALL-UNNAMED</opens.util>
+                <opens.lang>--add-opens=java.base/java.lang=ALL-UNNAMED</opens.lang>
+                <argLine>${opens.util} ${opens.lang}</argLine>
             </properties>
         </profile>
 
