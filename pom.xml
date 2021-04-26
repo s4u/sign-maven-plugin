@@ -92,6 +92,9 @@
         <slf4j-api.version>1.7.30</slf4j-api.version>
         <junit.version>5.7.0</junit.version>
         <project.build.outputTimestamp>2021-04-05T19:46:57Z</project.build.outputTimestamp>
+
+        <!-- default value is needed when jacoco is not executed -->
+        <argLine/>
     </properties>
 
     <dependencyManagement>
