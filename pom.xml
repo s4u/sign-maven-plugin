@@ -317,7 +317,9 @@
                 <jdk>[9,)</jdk>
             </activation>
             <properties>
-                <argLine>--add-opens=java.base/java.util=ALL-UNNAMED</argLine>
+                <opens.util>--add-opens=java.base/java.util=ALL-UNNAMED</opens.util>
+                <opens.lang>--add-opens=java.base/java.lang=ALL-UNNAMED</opens.lang>
+                <argLine>${opens.util} ${opens.lang}</argLine>
             </properties>
         </profile>
 
