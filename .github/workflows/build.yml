@@ -198,7 +198,7 @@ jobs:
 
       - uses: release-drafter/release-drafter@v5.15.0
         with:
-          publish: true
+          publish: false
           name: ${{ steps.tag.outputs.name }}
           tag: ${{ steps.tag.outputs.name }}
         env:
