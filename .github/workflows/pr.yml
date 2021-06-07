@@ -40,7 +40,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - uses: actions/cache@v2.1.5
+      - uses: actions/cache@v2.1.6
         with:
           path: |
             ~/.m2/repository
@@ -87,7 +87,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: actions/cache@v2.1.5
+      - uses: actions/cache@v2.1.6
         with:
           path: ~/.m2/repository
           key: ${{ needs.setup.outputs.date-ym}}-maven-site-test-${{ hashFiles('**/pom.xml') }}

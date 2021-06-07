@@ -47,7 +47,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/cache@v2.1.5
+      - uses: actions/cache@v2.1.6
         with:
           path: |
             ~/.m2/repository
@@ -91,7 +91,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
 
-      - uses: actions/cache@v2.1.5
+      - uses: actions/cache@v2.1.6
         with:
           path: ~/.m2/repository
           key: ${{ needs.setup.outputs.date-ym}}-maven-site-test-${{ hashFiles('**/pom.xml') }}
@@ -121,7 +121,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
 
-      - uses: actions/cache@v2.1.5
+      - uses: actions/cache@v2.1.6
         with:
           path: ~/.m2/repository
           key: ${{ needs.setup.outputs.date-ym}}-ubuntu-latest-jdk8-deploy-${{ hashFiles('**/pom.xml') }}
@@ -155,7 +155,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
 
-      - uses: actions/cache@v2.1.5
+      - uses: actions/cache@v2.1.6
         with:
           path: ~/.m2/repository
           key: ${{ needs.setup.outputs.date-ym}}-maven-site-deploy-${{ hashFiles('**/pom.xml') }}
