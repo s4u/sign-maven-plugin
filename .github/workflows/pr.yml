@@ -48,7 +48,7 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-
 
-      - uses: actions/setup-java@v2.1.0
+      - uses: actions/setup-java@v2.2.0
         with:
           java-version: ${{ matrix.java }}
           distribution: 'adopt'
@@ -93,7 +93,7 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-maven-site-test-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-maven-site-test-
 
-      - uses: actions/setup-java@v2.1.0
+      - uses: actions/setup-java@v2.2.0
         with:
           java-version: 8
           distribution: 'adopt'
