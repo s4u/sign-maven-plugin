@@ -1,7 +1,7 @@
 Introduction
 ============
 
-`Sign Maven Plugin` allows you to creates OpenPGP signatures for all of the project's artifacts
+`Sign Maven Plugin` allows you to creates Open PGP / GPG signatures for all of the project's artifacts
 without any external software.
 
 This plugin can replace **maven-gpg-plugin** in an easy way and provide new features.
@@ -10,8 +10,60 @@ Feature
 -------
 
 - all the signing operations are done using `Bouncy Castle`
-- support Maven `3.6` and is ready for next version `3.7/4.0` of Maven  with `Consumer POM`
+- support Maven `3.6` and is ready for next version `4.0` of Maven  with `Consumer POM`
 - support `subkey` for signing
 - easy to use on CI system, configuration can be provided by environment variables 
 - key passphrase can be encrypted by standard Maven [Password Encryption](https://maven.apache.org/guides/mini/guide-encryption.html)
+- no needed store private key on CI system - you can use key from environment variable
+ 
+Usage
+-----
 
+#[[###]]# Key configuration provided in pom
+
+```xml
+<plugins>
+    <plugin>
+        <groupId>org.simplify4u.plugins</groupId>
+        <artifactId>sign-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>sign</goal>
+                </goals>
+                <configuration>
+                    <keyId><!-- key id in hex --></keyId>
+                    <keyPass><!-- private key passphrase --></keyPass>
+                    <keyFile><!-- private key file location --></keyFile>
+                </configuration>
+            </execution>
+        </executions>
+    </plugin>
+    ...
+</plugins>
+```
+
+#[[###]]# Key configuration provided in environment variables
+
+Key configuration can be provided by environment variables: `SIGN_KEY`, `SIGN_KEY_ID`, `SIGN_KEY_PASS`.
+
+So your pom configuration can be simplified to:
+
+```xml
+<plugins>
+    <plugin>
+        <groupId>org.simplify4u.plugins</groupId>
+        <artifactId>sign-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>sign</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+    ...
+</plugins>
+```

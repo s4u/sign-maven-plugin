@@ -38,7 +38,7 @@ import org.simplify4u.plugins.sign.openpgp.PGPSignerKeyNotFoundException;
 import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 
 /**
- * Creates OpenPGP signatures for all of the project's artifacts.
+ * Creates Open PGP / GPG signatures for all of the project's artifacts.
  *
  * @author Slawomir Jaranowski
  * @since 0.1.0
