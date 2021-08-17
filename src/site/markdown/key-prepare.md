@@ -90,9 +90,9 @@ Like for master key you can store your `subkey` in `~/.m2/sign-key.asc` or set a
 ## Publishing public key 
 
 Finally, you should publish your master public key to a keys server network 
-in order to make it possibile to verify your signatures by others.
+in order to make it possible to verify your signatures by others.
 
 eg:
 ```shell
-gpg --keyserver hkps://hkps.pool.sks-keyservers.net --send-key 0C5CEA1C96038404
+gpg --keyserver keyserver.ubuntu.com --send-key 0C5CEA1C96038404
 ```
