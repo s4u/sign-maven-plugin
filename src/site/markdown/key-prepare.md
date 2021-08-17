@@ -1,4 +1,4 @@
-# OpenPGP private key preparation
+# Open PGP / GPG private key preparation
 
 ## Used software
 
