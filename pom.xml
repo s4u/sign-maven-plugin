@@ -91,6 +91,8 @@
         <maven.version>3.6.0</maven.version>
         <slf4j-api.version>1.7.32</slf4j-api.version>
         <junit.version>5.7.0</junit.version>
+        <pgpverify-maven-plugin.version>1.14.1</pgpverify-maven-plugin.version>
+
         <project.build.outputTimestamp>2021-04-05T19:46:57Z</project.build.outputTimestamp>
 
         <!-- default value is needed when jacoco is not executed -->
@@ -272,6 +274,16 @@
     </repositories>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.simplify4u.plugins</groupId>
+                    <artifactId>pgpverify-maven-plugin</artifactId>
+                    <version>${pgpverify-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
