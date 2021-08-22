@@ -66,7 +66,7 @@
             <plugin>
                 <groupId>org.simplify4u.plugins</groupId>
                 <artifactId>pgpverify-maven-plugin</artifactId>
-                <version>1.10.1</version>
+                <version>@pgpverify-maven-plugin.version@</version>
                 <executions>
                     <execution>
                         <goals>
