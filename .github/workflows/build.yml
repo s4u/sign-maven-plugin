@@ -55,15 +55,11 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-
 
-      - uses: actions/setup-java@v2.3.0
+      - uses: s4u/setup-maven-action@v1.0.0
         with:
           java-version: ${{ matrix.java }}
-          distribution: 'adopt'
-
-      - uses: s4u/maven-settings-action@v2.4.1
-        with:
-          sonatypeSnapshots: true
-          properties: |
+          settings-sonatypeSnapshots: true
+          settings-properties: |
             [
               {"sonar.login": "2de0e32b2b3108965f76a4713ba2028978c233ed"},
               {"sonar.branch.name": "${{ needs.setup.outputs.branch }}"}
@@ -97,14 +93,10 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-maven-site-test-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-maven-site-test-
 
-      - uses: actions/setup-java@v2.3.0
+      - uses: s4u/setup-maven-action@v1.0.0
         with:
           java-version: 8
-          distribution: 'adopt'
-
-      - uses: s4u/maven-settings-action@v2.4.1
-        with:
-          sonatypeSnapshots: true
+          settings-sonatypeSnapshots: true
 
       - run: mvn --errors --show-version site
 
@@ -127,15 +119,11 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-ubuntu-latest-jdk8-deploy-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-ubuntu-latest-jdk8-
 
-      - uses: actions/setup-java@v2.3.0
+      - uses: s4u/setup-maven-action@v1.0.0
         with:
           java-version: 8
-          distribution: 'adopt'
-
-      - uses: s4u/maven-settings-action@v2.4.1
-        with:
-          sonatypeSnapshots: true
-          servers: '[{"id": "ossrh", "username": "${env.OSS_USER}", "password": "${env.OSS_PASS}"}]'
+          settings-sonatypeSnapshots: true
+          settings-servers: '[{"id": "ossrh", "username": "${env.OSS_USER}", "password": "${env.OSS_PASS}"}]'
 
       - run: mvn --errors --show-version deploy -Dmaven.test.skip=true
         env:
@@ -161,15 +149,11 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-maven-site-deploy-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-maven-site-
 
-      - uses: actions/setup-java@v2.3.0
+      - uses: s4u/setup-maven-action@v1.0.0
         with:
           java-version: 8
-          distribution: 'adopt'
-
-      - uses: s4u/maven-settings-action@v2.4.1
-        with:
-          sonatypeSnapshots: true
-          properties: |
+          settings-sonatypeSnapshots: true
+          settings-properties: |
             [
               {"username": "git"},
               {"password": "${{ secrets.TECH_TOKEN }}"},

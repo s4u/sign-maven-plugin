@@ -48,15 +48,11 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-
 
-      - uses: actions/setup-java@v2.3.0
+      - uses: s4u/setup-maven-action@v1.0.0
         with:
           java-version: ${{ matrix.java }}
-          distribution: 'adopt'
-
-      - uses: s4u/maven-settings-action@v2.4.1
-        with:
-          sonatypeSnapshots: true
-          properties: |
+          settings-sonatypeSnapshots: true
+          settings-properties: |
             [
               {"sonar.pullrequest.key": "${{ github.event.number }}"},
               {"sonar.pullrequest.base": "${{ github.event.pull_request.base.ref }}"},
@@ -93,13 +89,9 @@ jobs:
           key: ${{ needs.setup.outputs.date-ym}}-maven-site-test-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ needs.setup.outputs.date-ym}}-maven-site-test-
 
-      - uses: actions/setup-java@v2.3.0
+      - uses: s4u/setup-maven-action@v1.0.0
         with:
           java-version: 8
-          distribution: 'adopt'
-
-      - uses: s4u/maven-settings-action@v2.4.1
-        with:
-          sonatypeSnapshots: true
+          settings-sonatypeSnapshots: true
 
       - run: mvn --errors --show-version site
