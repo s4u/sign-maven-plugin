@@ -41,15 +41,7 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
 
-      - uses: actions/cache@v2.1.6
-        with:
-          path: |
-            ~/.m2/repository
-            ~/.sonar/cache
-          key: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-
-
-      - uses: s4u/setup-maven-action@v1.0.0
+      - uses: s4u/setup-maven-action@v1.1.0
         with:
           java-version: ${{ matrix.java }}
           settings-sonatypeSnapshots: true
@@ -62,6 +54,8 @@ jobs:
               {"sonar.login": "2de0e32b2b3108965f76a4713ba2028978c233ed"},
               {"sonar.scm.revision": "${{ github.event.pull_request.head.sha }}"}
             ]
+          cache-prefix: ${{ needs.setup.outputs.date-ym}}-
+          cache-path-add: ~/.sonar/cache
 
       - name: sonar setup
         id: sonar
@@ -84,15 +78,10 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: actions/cache@v2.1.6
-        with:
-          path: ~/.m2/repository
-          key: ${{ needs.setup.outputs.date-ym}}-maven-site-test-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ needs.setup.outputs.date-ym}}-maven-site-test-
-
-      - uses: s4u/setup-maven-action@v1.0.0
+      - uses: s4u/setup-maven-action@v1.1.0
         with:
           java-version: 8
           settings-sonatypeSnapshots: true
+          cache-prefix: ${{ needs.setup.outputs.date-ym}}-maven-site-
 
       - run: mvn --errors --show-version site

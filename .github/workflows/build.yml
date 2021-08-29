@@ -48,15 +48,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: actions/cache@v2.1.6
-        with:
-          path: |
-            ~/.m2/repository
-            ~/.sonar/cache
-          key: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ needs.setup.outputs.date-ym}}-${{ matrix.os }}-jdk${{ matrix.java }}-
-
-      - uses: s4u/setup-maven-action@v1.0.0
+      - uses: s4u/setup-maven-action@v1.1.0
         with:
           java-version: ${{ matrix.java }}
           settings-sonatypeSnapshots: true
@@ -65,6 +57,8 @@ jobs:
               {"sonar.login": "2de0e32b2b3108965f76a4713ba2028978c233ed"},
               {"sonar.branch.name": "${{ needs.setup.outputs.branch }}"}
             ]
+          cache-prefix: ${{ needs.setup.outputs.date-ym}}-
+          cache-path-add: ~/.sonar/cache
 
       - name: sonar setup
         id: sonar
@@ -88,16 +82,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
 
-      - uses: actions/cache@v2.1.6
-        with:
-          path: ~/.m2/repository
-          key: ${{ needs.setup.outputs.date-ym}}-maven-site-test-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ needs.setup.outputs.date-ym}}-maven-site-test-
-
-      - uses: s4u/setup-maven-action@v1.0.0
+      - uses: s4u/setup-maven-action@v1.1.0
         with:
           java-version: 8
           settings-sonatypeSnapshots: true
+          cache-prefix: ${{ needs.setup.outputs.date-ym}}-maven-site-
 
       - run: mvn --errors --show-version site
 
@@ -114,17 +103,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
 
-      - uses: actions/cache@v2.1.6
-        with:
-          path: ~/.m2/repository
-          key: ${{ needs.setup.outputs.date-ym}}-ubuntu-latest-jdk8-deploy-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ needs.setup.outputs.date-ym}}-ubuntu-latest-jdk8-
-
-      - uses: s4u/setup-maven-action@v1.0.0
+      - uses: s4u/setup-maven-action@v1.1.0
         with:
           java-version: 8
           settings-sonatypeSnapshots: true
           settings-servers: '[{"id": "ossrh", "username": "${env.OSS_USER}", "password": "${env.OSS_PASS}"}]'
+          cache-prefix: ${{ needs.setup.outputs.date-ym}}-
 
       - run: mvn --errors --show-version deploy -Dmaven.test.skip=true
         env:
@@ -144,13 +128,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.3.4
 
-      - uses: actions/cache@v2.1.6
-        with:
-          path: ~/.m2/repository
-          key: ${{ needs.setup.outputs.date-ym}}-maven-site-deploy-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ needs.setup.outputs.date-ym}}-maven-site-
-
-      - uses: s4u/setup-maven-action@v1.0.0
+      - uses: s4u/setup-maven-action@v1.1.0
         with:
           java-version: 8
           settings-sonatypeSnapshots: true
@@ -161,6 +139,8 @@ jobs:
               {"scmpublish.pubScmUrl": "scm:git:${{ github.event.repository.url}}"},
               {"scmpublish.dryRun": "false"}
             ]
+          cache-prefix: ${{ needs.setup.outputs.date-ym}}-maven-site-
+
 
       - run: |
           git config --global user.email "github-actions@github.com"
