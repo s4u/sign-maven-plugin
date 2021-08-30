@@ -44,12 +44,9 @@ jobs:
         java: [ 8, 11, 16, 17-ea ]
 
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: s4u/setup-maven-action@v1.2.0
         with:
-          fetch-depth: 0
-
-      - uses: s4u/setup-maven-action@v1.1.0
-        with:
+          checkout-fetch-depth: 0
           java-version: ${{ matrix.java }}
           settings-sonatypeSnapshots: true
           settings-properties: |
@@ -80,9 +77,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2.3.4
-
-      - uses: s4u/setup-maven-action@v1.1.0
+      - uses: s4u/setup-maven-action@v1.2.0
         with:
           java-version: 8
           settings-sonatypeSnapshots: true
@@ -101,9 +96,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2.3.4
-
-      - uses: s4u/setup-maven-action@v1.1.0
+      - uses: s4u/setup-maven-action@v1.2.0
         with:
           java-version: 8
           settings-sonatypeSnapshots: true
@@ -126,9 +119,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2.3.4
-
-      - uses: s4u/setup-maven-action@v1.1.0
+      - uses: s4u/setup-maven-action@v1.2.0
         with:
           java-version: 8
           settings-sonatypeSnapshots: true
@@ -140,7 +131,6 @@ jobs:
               {"scmpublish.dryRun": "false"}
             ]
           cache-prefix: ${{ needs.setup.outputs.date-ym}}-maven-site-
-
 
       - run: |
           git config --global user.email "github-actions@github.com"
