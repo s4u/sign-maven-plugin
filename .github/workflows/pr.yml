@@ -36,7 +36,7 @@ jobs:
         java: [ 8, 11, 16, 17-ea ]
 
     steps:
-      - uses: s4u/setup-maven-action@v1.2.0
+      - uses: s4u/setup-maven-action@v1.2.1
         with:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.java }}
@@ -70,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: s4u/setup-maven-action@v1.2.0
+      - uses: s4u/setup-maven-action@v1.2.1
         with:
           java-version: 8
           settings-sonatypeSnapshots: true
