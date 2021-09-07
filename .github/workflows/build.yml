@@ -24,34 +24,43 @@ jobs:
     outputs:
       branch: ${{ steps.setup.outputs.branch }}
       date-ym: ${{ steps.setup.outputs.date-ym }}
+      sonar: ${{ steps.setup.outputs.sonar }}
+      maven-matrix: ${{ steps.setup.outputs.maven-matrix }}
+      maven-default: ${{ steps.setup.outputs.maven-default }}
 
     steps:
       - id: setup
-        run: |
-          echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
-          echo "::set-output name=date-ym::$(date +%y%m)"
+        uses: s4u/.github/actions/setup@master
 
   verify:
-    name: Build ${{ matrix.os }} jdk${{ matrix.java }}
+    name: Build ${{ matrix.os.label }} jdk-${{ matrix.java }} mvn-${{ matrix.maven }}
     needs: setup
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os.name }}
 
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, windows-latest, macOS-latest ]
+        os:
+          - name: ubuntu-latest
+            label: Linux
+          - name: windows-latest
+            label: Windows
+          - name: macOS-latest
+            label: macOS
         java: [ 8, 11, 16, 17-ea ]
+        maven: ${{ fromJSON( needs.setup.outputs.maven-matrix ) }}
 
     steps:
       - uses: s4u/setup-maven-action@v1.2.1
         with:
           checkout-fetch-depth: 0
           java-version: ${{ matrix.java }}
+          maven-version: ${{ matrix.maven }}
           settings-sonatypeSnapshots: true
           settings-properties: |
             [
-              {"sonar.login": "2de0e32b2b3108965f76a4713ba2028978c233ed"},
+              {"sonar.login": "${{ needs.setup.outputs.sonar }}"},
               {"sonar.branch.name": "${{ needs.setup.outputs.branch }}"}
             ]
           cache-prefix: ${{ needs.setup.outputs.date-ym}}-
@@ -61,8 +70,9 @@ jobs:
         id: sonar
         run: echo "::set-output name=mvn-args::sonar:sonar -P coverage"
         if: >
-          matrix.os == 'ubuntu-latest'
+          matrix.os.name == 'ubuntu-latest'
           && matrix.java == '11'
+          && matrix.maven == fromJSON( needs.setup.outputs.maven-matrix )[0]
           && github.repository_owner == 's4u'
           && startsWith( github.ref, 'refs/heads/')
 
@@ -80,6 +90,7 @@ jobs:
       - uses: s4u/setup-maven-action@v1.2.1
         with:
           java-version: 8
+          maven-version: 3.8.1
           settings-sonatypeSnapshots: true
           cache-prefix: ${{ needs.setup.outputs.date-ym}}-maven-site-
 
@@ -99,6 +110,7 @@ jobs:
       - uses: s4u/setup-maven-action@v1.2.1
         with:
           java-version: 8
+          maven-version: ${{ needs.setup.outputs.maven-default }}
           settings-sonatypeSnapshots: true
           settings-servers: '[{"id": "ossrh", "username": "${env.OSS_USER}", "password": "${env.OSS_PASS}"}]'
           cache-prefix: ${{ needs.setup.outputs.date-ym}}-
@@ -122,6 +134,7 @@ jobs:
       - uses: s4u/setup-maven-action@v1.2.1
         with:
           java-version: 8
+          maven-version: 3.8.1
           settings-sonatypeSnapshots: true
           settings-properties: |
             [
