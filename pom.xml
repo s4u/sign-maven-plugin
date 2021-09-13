@@ -189,7 +189,7 @@
                 <!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=552642 -->
                 <groupId>org.eclipse.sisu</groupId>
                 <artifactId>org.eclipse.sisu.inject</artifactId>
-                <version>0.3.4</version>
+                <version>0.3.5</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
