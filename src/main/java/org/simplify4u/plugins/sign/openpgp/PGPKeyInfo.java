@@ -30,7 +30,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
 
 /**
  * Information about pgp key.
