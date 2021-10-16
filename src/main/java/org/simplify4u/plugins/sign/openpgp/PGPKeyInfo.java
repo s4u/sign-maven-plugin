@@ -29,6 +29,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Information about pgp key.
@@ -36,6 +37,7 @@ import lombok.experimental.FieldDefaults;
  * @author Slawomir Jaranowski
  */
 
+@Slf4j
 @Getter
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class PGPKeyInfo {
@@ -76,8 +78,18 @@ public class PGPKeyInfo {
      * @return content of environment variable or empty if not exist.
      */
     private static Optional<String> stringFromEnv(String environmentName) {
-        return Optional.ofNullable(System.getenv(environmentName))
+        Optional<String> returnValue =
+                Optional
+                .ofNullable(System.getenv(environmentName))
                 .filter(s -> !"null".equals(s));
+
+        if (returnValue.isPresent()) {
+            LOGGER.debug("Retrieved {} configuration from environment variable", environmentName);
+        } else {
+            LOGGER.debug("No {} set as environment variable", environmentName);
+        }
+
+        return returnValue;
     }
 
     private static InputStream keyFromFile(File keyFile) {

@@ -15,6 +15,12 @@
  */
 package org.simplify4u.plugins.sign.openpgp;
 
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
 
+@ExtendWith(MockitoExtension.class)
 class PGPKeyInfoTest {
 
     private static final String KEY_ID_STR = "ABCDEF0123456789";
@@ -35,9 +42,11 @@ class PGPKeyInfoTest {
 
     private static final File KEY_FILE = new File(PGPKeyInfo.class.getResource("/priv-key-no-pass.asc").getFile());
 
+    @Mock(name = "org.simplify4u.plugins.sign.openpgp.PGPKeyInfo")
+    Logger logger;
+
     @Test
     void keyFromFileAllPropertiesSet() throws IOException {
-
         // when
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
                 .keyId(KEY_ID_STR)
@@ -49,6 +58,10 @@ class PGPKeyInfoTest {
         assertThat(keyInfo.getId()).isEqualTo(KEY_ID);
         assertThat(keyInfo.getPass()).isEqualTo(KEY_PASS);
         assertThat(keyInfo.getKey()).hasSameContentAs(Files.newInputStream(KEY_FILE.toPath()));
+        Mockito.verify(logger).debug("No {} set as environment variable", "SIGN_KEY_ID");
+        Mockito.verify(logger).debug("No {} set as environment variable", "SIGN_KEY_PASS");
+        Mockito.verify(logger).debug("No {} set as environment variable", "SIGN_KEY");
+        Mockito.verifyNoMoreInteractions(logger);
     }
 
 
@@ -80,6 +93,10 @@ class PGPKeyInfoTest {
         assertThat(keyInfo.getId()).isEqualTo(KEY_ID);
         assertThat(keyInfo.getPass()).isEqualTo(KEY_PASS);
         assertThat(keyInfo.getKey()).hasContent("signKey from environment");
+        Mockito.verify(logger).debug("Retrieved {} configuration from environment variable", "SIGN_KEY_ID");
+        Mockito.verify(logger).debug("Retrieved {} configuration from environment variable", "SIGN_KEY_PASS");
+        Mockito.verify(logger).debug("Retrieved {} configuration from environment variable", "SIGN_KEY");
+        Mockito.verifyNoMoreInteractions(logger);
     }
 
     @Test

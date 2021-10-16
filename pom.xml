@@ -167,6 +167,11 @@
                 <artifactId>slf4j-simple</artifactId>
                 <version>${slf4j-api.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>4.0.0</version>
+            </dependency>
 
             <!-- dependency coverage -->
             <dependency>
@@ -253,8 +258,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
+            <groupId>org.simplify4u</groupId>
+            <artifactId>slf4j-mock</artifactId>
+            <version>2.1.1</version>
             <scope>test</scope>
         </dependency>
 
