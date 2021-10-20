@@ -78,10 +78,10 @@ public class PGPKeyInfo {
      * @return content of environment variable or empty if not exist.
      */
     private static Optional<String> stringFromEnv(String environmentName) {
-        Optional<String> returnValue =
-                Optional
-                .ofNullable(System.getenv(environmentName))
-                .filter(s -> !"null".equals(s));
+        Optional<String> returnValue = Optional.ofNullable(System.getenv(environmentName))
+                .map(String::trim)
+                .filter(s -> !"null".equals(s))
+                .filter(s -> !s.isEmpty());
 
         if (returnValue.isPresent()) {
             LOGGER.debug("Retrieved {} configuration from environment variable", environmentName);
