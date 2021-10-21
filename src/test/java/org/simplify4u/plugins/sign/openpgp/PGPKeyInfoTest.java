@@ -15,21 +15,21 @@
  */
 package org.simplify4u.plugins.sign.openpgp;
 
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.SetEnvironmentVariable;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
 
 @ExtendWith(MockitoExtension.class)
 class PGPKeyInfoTest {
@@ -58,10 +58,10 @@ class PGPKeyInfoTest {
         assertThat(keyInfo.getId()).isEqualTo(KEY_ID);
         assertThat(keyInfo.getPass()).isEqualTo(KEY_PASS);
         assertThat(keyInfo.getKey()).hasSameContentAs(Files.newInputStream(KEY_FILE.toPath()));
-        Mockito.verify(logger).debug("No {} set as environment variable", "SIGN_KEY_ID");
-        Mockito.verify(logger).debug("No {} set as environment variable", "SIGN_KEY_PASS");
-        Mockito.verify(logger).debug("No {} set as environment variable", "SIGN_KEY");
-        Mockito.verifyNoMoreInteractions(logger);
+        verify(logger).debug("No {} set as environment variable", "SIGN_KEY_ID");
+        verify(logger).debug("No {} set as environment variable", "SIGN_KEY_PASS");
+        verify(logger).debug("No {} set as environment variable", "SIGN_KEY");
+        verifyNoMoreInteractions(logger);
     }
 
 
@@ -87,16 +87,43 @@ class PGPKeyInfoTest {
 
         // when
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
+                .keyId("aaa")
+                .keyPass("bbb")
+                .keyFile(new File("fff"))
                 .build();
 
         // then
         assertThat(keyInfo.getId()).isEqualTo(KEY_ID);
         assertThat(keyInfo.getPass()).isEqualTo(KEY_PASS);
         assertThat(keyInfo.getKey()).hasContent("signKey from environment");
-        Mockito.verify(logger).debug("Retrieved {} configuration from environment variable", "SIGN_KEY_ID");
-        Mockito.verify(logger).debug("Retrieved {} configuration from environment variable", "SIGN_KEY_PASS");
-        Mockito.verify(logger).debug("Retrieved {} configuration from environment variable", "SIGN_KEY");
-        Mockito.verifyNoMoreInteractions(logger);
+        verify(logger).debug("Retrieved {} configuration from environment variable", "SIGN_KEY_ID");
+        verify(logger).debug("Retrieved {} configuration from environment variable", "SIGN_KEY_PASS");
+        verify(logger).debug("Retrieved {} configuration from environment variable", "SIGN_KEY");
+        verifyNoMoreInteractions(logger);
+    }
+
+    @Test
+    @SetEnvironmentVariable(key = "SIGN_KEY", value = "")
+    @SetEnvironmentVariable(key = "SIGN_KEY_ID", value = "")
+    @SetEnvironmentVariable(key = "SIGN_KEY_PASS", value = "")
+    void allowEmptyValueInEnvVariable() throws IOException {
+
+        // when
+        PGPKeyInfo keyInfo = PGPKeyInfo.builder()
+                .keyId(KEY_ID_STR)
+                .keyPass(KEY_PASS_STR)
+                .keyFile(KEY_FILE)
+                .build();
+
+        // then
+        assertThat(keyInfo.getId()).isEqualTo(KEY_ID);
+        assertThat(keyInfo.getPass()).isEqualTo(KEY_PASS);
+        assertThat(keyInfo.getKey()).hasSameContentAs(Files.newInputStream(KEY_FILE.toPath()));
+
+        verify(logger).debug("No {} set as environment variable", "SIGN_KEY_ID");
+        verify(logger).debug("No {} set as environment variable", "SIGN_KEY_PASS");
+        verify(logger).debug("No {} set as environment variable", "SIGN_KEY");
+        verifyNoMoreInteractions(logger);
     }
 
     @Test

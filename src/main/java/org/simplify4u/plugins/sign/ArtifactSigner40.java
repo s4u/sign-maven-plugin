@@ -46,6 +46,8 @@ public class ArtifactSigner40 extends ArtifactSigner {
     public List<SignResult> signArtifact(Artifact artifact) {
         LOGGER.info("Signing artifact: {}", artifact);
 
+        verifyArtifact(artifact);
+
         org.eclipse.aether.artifact.Artifact srcArtifact = new org.eclipse.aether.artifact.DefaultArtifact(
                 artifact.getGroupId(),
                 artifact.getArtifactId(),
