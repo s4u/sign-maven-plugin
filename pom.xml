@@ -52,6 +52,7 @@
     </licenses>
 
     <developers>
+        <!-- Join a team if you want to support, maintain project -->
         <developer>
             <id>sjaranowski</id>
             <name>Slawomir Jaranowski</name>
@@ -68,6 +69,10 @@
             <timezone>Europe/Berlin</timezone>
         </developer>
     </developers>
+
+    <contributors>
+        <!-- Add yourself to list after contributions - if wish -->
+    </contributors>
 
     <prerequisites>
         <maven>${maven.version}</maven>
@@ -88,10 +93,12 @@
     </distributionManagement>
 
     <properties>
-        <maven.version>3.6.0</maven.version>
-        <slf4j-api.version>1.7.32</slf4j-api.version>
+
         <junit.version>5.7.0</junit.version>
+        <maven.version>3.6.0</maven.version>
+        <mockito.version>4.0.0</mockito.version>
         <pgpverify-maven-plugin.version>1.14.1</pgpverify-maven-plugin.version>
+        <slf4j-api.version>1.7.32</slf4j-api.version>
 
         <project.build.outputTimestamp>2021-04-05T19:46:57Z</project.build.outputTimestamp>
 
@@ -160,7 +167,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>4.0.0</version>
+                <version>${mockito.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -170,7 +177,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>4.0.0</version>
+                <version>${mockito.version}</version>
             </dependency>
 
             <!-- dependency coverage -->
