@@ -94,11 +94,15 @@ public class PGPKeyInfo {
 
     private static InputStream keyFromFile(File keyFile) {
 
-        if (!keyFile.exists()) {
+        File file = PGPKeyFileUtil.calculateWithUserHome(keyFile);
+
+        if (!file.exists()) {
             throw new PGPSignerKeyNotFoundException("key file: " + keyFile + " not found");
         }
 
-        return Try.of(() -> Files.readAllBytes(keyFile.toPath()))
+        LOGGER.debug("Read key from file: {}", file);
+
+        return Try.of(() -> Files.readAllBytes(file.toPath()))
                 .map(ByteArrayInputStream::new)
                 .getOrElseThrow(PGPSignerException::new);
     }

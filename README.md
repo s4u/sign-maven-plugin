@@ -55,6 +55,8 @@ Please look at our [tutorial](https://www.simplify4u.org/sign-maven-plugin/key-p
 
 Key configuration can be provided by environment variables: `SIGN_KEY`, `SIGN_KEY_ID`, `SIGN_KEY_PASS`.
 
+When using environment variables for configuration, `SIGN_KEY` - must contain private key content - not file path for key
+
 So your pom configuration can be simplified to:
 
 ```xml
