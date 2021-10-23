@@ -21,6 +21,8 @@ import java.nio.file.Files;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -61,6 +63,7 @@ class PGPKeyInfoTest {
         verify(logger).debug("No {} set as environment variable", "SIGN_KEY_ID");
         verify(logger).debug("No {} set as environment variable", "SIGN_KEY_PASS");
         verify(logger).debug("No {} set as environment variable", "SIGN_KEY");
+        verify(logger).debug(eq("Read key from file: {}"), any(File.class));
         verifyNoMoreInteractions(logger);
     }
 
@@ -123,6 +126,7 @@ class PGPKeyInfoTest {
         verify(logger).debug("No {} set as environment variable", "SIGN_KEY_ID");
         verify(logger).debug("No {} set as environment variable", "SIGN_KEY_PASS");
         verify(logger).debug("No {} set as environment variable", "SIGN_KEY");
+        verify(logger).debug(eq("Read key from file: {}"), any(File.class));
         verifyNoMoreInteractions(logger);
     }
 

@@ -89,7 +89,10 @@ public class SignMojo extends AbstractMojo {
      * <p>File with <code>private key</code> used for signing.</p>
      *
      * <p>This value can be delivered by environment variable <code>SIGN_KEY</code>.
-     * Environment variable must contain private key content.</p>
+     * Environment variable must contain private key content - not file path for key.</p>
+     *
+     * <p>If <code>keyFile</code> path start with <code>~/</code>
+     * then <code>~/</code> will be replace by user home directory - java <code>user.home</code> property</p>
      *
      * <p>Key can by created and exported by:</p>
      * <pre>
