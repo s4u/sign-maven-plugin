@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.artifact.Artifact;
 
 /**
- * Artifact signer - implementation for Maven &gt;= 3.6.x and &lt;3.7.0
+ * Artifact signer - implementation for Maven &gt;= 3.6.x and &lt;4.0.0
  *
  * @author Slawomir Jaranowski
  */
@@ -41,12 +41,10 @@ public class ArtifactSigner36 extends ArtifactSigner {
 
         verifyArtifact(artifact);
 
-        try (InputStream artifactInputStream = new BufferedInputStream(Files.newInputStream(artifact.getFile().toPath()))) {
-            return Collections.singletonList(makeSignature(artifactInputStream,
-                    artifact.getArtifactId(),
-                    artifact.getClassifier(),
-                    artifact.getVersion(),
-                    artifact.getArtifactHandler().getExtension()));
+        try (InputStream artifactInputStream = new BufferedInputStream(
+                Files.newInputStream(artifact.getFile().toPath()))) {
+
+            return Collections.singletonList(makeSignature(mArtifactToAether(artifact), artifactInputStream));
         } catch (IOException e) {
             throw new SignMojoException(e);
         }
