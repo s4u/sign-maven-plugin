@@ -62,20 +62,31 @@ public abstract class ArtifactSigner {
         }
     }
 
+    protected org.eclipse.aether.artifact.Artifact mArtifactToAether(Artifact artifact) {
+        return new org.eclipse.aether.artifact.DefaultArtifact(
+                artifact.getGroupId(),
+                artifact.getArtifactId(),
+                artifact.getClassifier(),
+                artifact.getArtifactHandler().getExtension(),
+                artifact.getVersion(),
+                null,
+                artifact.getFile());
+    }
+
     /**
      * Sign given input stream. In result we will have file with signature.
      *
+     * @param artifact    used for built filename
      * @param inputStream data to sign
-     * @param artifactId  used for built filename
-     * @param classifier  used for built filename
-     * @param version     used for built filename
-     * @param extension   used for built filename
      *
      * @return result of signing
      */
-    protected SignResult makeSignature(InputStream inputStream,
-            String artifactId, String classifier, String version,
-            String extension) {
+    protected SignResult makeSignature(org.eclipse.aether.artifact.Artifact artifact, InputStream inputStream) {
+
+        String artifactId = artifact.getArtifactId();
+        String classifier = artifact.getClassifier();
+        String version = artifact.getVersion();
+        String extension = artifact.getExtension();
 
         String targetExt = extension + ".asc";
         String targetName = artifactId + '-' + version;

@@ -26,12 +26,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
+import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.transform.FileTransformer;
 
 /**
- * Artifact signer - implementation for Maven &gt;= 3.7.0
+ * Artifact signer - implementation for Maven &gt;= 4.0.0
  *
  * @author Slawomir Jaranowski
  */
@@ -43,21 +43,15 @@ public class ArtifactSigner40 extends ArtifactSigner {
     private MavenSession session;
 
     @Override
-    public List<SignResult> signArtifact(Artifact artifact) {
+    public List<SignResult> signArtifact(org.apache.maven.artifact.Artifact artifact) {
         LOGGER.info("Signing artifact: {}", artifact);
 
         verifyArtifact(artifact);
 
-        org.eclipse.aether.artifact.Artifact srcArtifact = new org.eclipse.aether.artifact.DefaultArtifact(
-                artifact.getGroupId(),
-                artifact.getArtifactId(),
-                artifact.getClassifier(),
-                artifact.getArtifactHandler().getExtension(),
-                artifact.getVersion(),
-                null,
-                artifact.getFile());
+        Artifact srcArtifact = mArtifactToAether(artifact);
 
-        Collection<FileTransformer> transformersForArtifact = session.getRepositorySession().getFileTransformerManager()
+        Collection<FileTransformer> transformersForArtifact = session.getRepositorySession()
+                .getFileTransformerManager()
                 .getTransformersForArtifact(srcArtifact);
 
         List<SignResult> result = new ArrayList<>();
@@ -66,20 +60,12 @@ public class ArtifactSigner40 extends ArtifactSigner {
             if (transformersForArtifact.isEmpty()) {
                 try (InputStream artifactInputStream = new BufferedInputStream(
                         Files.newInputStream(srcArtifact.getFile().toPath()))) {
-                    result.add(makeSignature(artifactInputStream,
-                            srcArtifact.getArtifactId(),
-                            srcArtifact.getClassifier(),
-                            srcArtifact.getVersion(),
-                            srcArtifact.getExtension()));
+                    result.add(makeSignature(srcArtifact, artifactInputStream));
                 }
             } else {
                 for (FileTransformer fileTransformer : transformersForArtifact) {
-                    org.eclipse.aether.artifact.Artifact dstArtifact = fileTransformer.transformArtifact(srcArtifact);
-                    result.add(makeSignature(fileTransformer.transformData(srcArtifact.getFile()),
-                            dstArtifact.getArtifactId(),
-                            dstArtifact.getClassifier(),
-                            dstArtifact.getVersion(),
-                            dstArtifact.getExtension()));
+                    Artifact dstArtifact = fileTransformer.transformArtifact(srcArtifact);
+                    result.add(makeSignature(dstArtifact, fileTransformer.transformData(srcArtifact.getFile())));
                 }
             }
         } catch (IOException e) {
