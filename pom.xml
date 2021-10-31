@@ -94,11 +94,9 @@
 
     <properties>
 
-        <junit.version>5.7.0</junit.version>
         <maven.version>3.6.0</maven.version>
         <mockito.version>4.0.0</mockito.version>
         <pgpverify-maven-plugin.version>1.14.1</pgpverify-maven-plugin.version>
-        <slf4j-api.version>1.7.32</slf4j-api.version>
 
         <project.build.outputTimestamp>2021-04-05T19:46:57Z</project.build.outputTimestamp>
 
@@ -109,6 +107,7 @@
     <dependencyManagement>
         <dependencies>
 
+            <!-- maven core -->
             <dependency>
                 <groupId>org.apache.maven</groupId>
                 <artifactId>maven-core</artifactId>
@@ -122,9 +121,10 @@
             <dependency>
                 <groupId>org.apache.maven.plugin-tools</groupId>
                 <artifactId>maven-plugin-annotations</artifactId>
-                <version>3.6.1</version>
+                <version>${maven-plugin-plugin.version}</version>
             </dependency>
 
+            <!-- external library -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcpg-jdk15on</artifactId>
@@ -138,7 +138,7 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>${slf4j-api.version}</version>
+                <version>1.7.32</version>
             </dependency>
             <dependency>
                 <groupId>io.vavr</groupId>
