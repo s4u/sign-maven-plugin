@@ -41,6 +41,13 @@
         </dependency>
 
         <dependency>
+            <groupId>test-group</groupId>
+            <artifactId>pom-packaging-env</artifactId>
+            <version>1.1.1</version>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
             <groupId>test-group-sub</groupId>
             <artifactId>standard-packaging</artifactId>
             <version>1.1.1</version>
