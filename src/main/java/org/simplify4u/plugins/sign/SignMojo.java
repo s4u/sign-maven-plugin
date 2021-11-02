@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 
-import io.vavr.control.Try;
 import lombok.AccessLevel;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +33,6 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.project.artifact.ProjectArtifact;
 import org.simplify4u.plugins.sign.openpgp.PGPKeyInfo;
-import org.simplify4u.plugins.sign.openpgp.PGPSignerKeyNotFoundException;
-import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 
 /**
  * Creates Open PGP / GPG signatures for all of the project's artifacts.
@@ -54,10 +51,10 @@ public class SignMojo extends AbstractMojo {
     private MavenProjectHelper projectHelper;
 
     @Inject
-    private ArtifactSignerFactory artifactSignerFactory;
+    private KeyInfoFactory keyInfoFactory;
 
     @Inject
-    private SecDispatcher secDispatcher;
+    private ArtifactSignerFactory artifactSignerFactory;
 
     /**
      * <p><code>keyId</code> used for signing. If not provided first key from <code>keyFile</code> will be taken.</p>
@@ -134,21 +131,19 @@ public class SignMojo extends AbstractMojo {
             return;
         }
 
-        PGPKeyInfo keyInfo;
-        try {
-            keyInfo = PGPKeyInfo.builder()
-                    .passDecryptor(this::decryptPass)
-                    .keyId(keyId)
-                    .keyPass(keyPass)
-                    .keyFile(keyFile)
-                    .build();
-        } catch (PGPSignerKeyNotFoundException e) {
+        PGPKeyInfo keyInfo = keyInfoFactory.buildKeyInfo(
+                KeyInfoFactory.KeyInfoRequest.builder()
+                        .id(keyId)
+                        .pass(keyPass)
+                        .file(keyFile)
+                        .build());
+
+        if (!keyInfo.isKeyAvailable()) {
             if (skipNoKey) {
                 LOGGER.info("Sign - key not found - skip execution");
                 return;
-            } else {
-                throw e;
             }
+            throw new SignMojoException("Required key for signing not found");
         }
 
         ArtifactSigner artifactSigner = artifactSignerFactory.getSigner(keyInfo);
@@ -165,11 +160,6 @@ public class SignMojo extends AbstractMojo {
                 .map(artifactSigner::signArtifact)
                 .flatMap(List::stream)
                 .forEach(this::attachSignResult);
-    }
-
-    private String decryptPass(String pass) {
-        return Try.of(() -> secDispatcher.decrypt(pass))
-                .getOrElseThrow(e -> new SignMojoException("Invalid encrypted password", e));
     }
 
     /**

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.simplify4u.plugins.sign.openpgp;
+package org.simplify4u.plugins.sign.utils;
 
 import java.io.File;
 
@@ -23,7 +23,7 @@ import lombok.experimental.UtilityClass;
  * Utility to manipulate key file name.
  */
 @UtilityClass
-class PGPKeyFileUtil {
+public class FileUtil {
 
     private static final String USER_HOME_PREFIX = "~" + File.separator;
 
@@ -34,7 +34,7 @@ class PGPKeyFileUtil {
      *
      * @return file name with user hom directory
      */
-    File calculateWithUserHome(File keyFile) {
+    public File calculateWithUserHome(File keyFile) {
 
         String filePath = keyFile.getPath();
 

@@ -31,8 +31,7 @@ import org.simplify4u.plugins.sign.openpgp.PGPKeyInfo;
 @ExtendWith(MockitoExtension.class)
 class ArtifactSignerFactoryTest {
 
-    @Mock
-    private PGPKeyInfo keyInfo;
+    private PGPKeyInfo keyInfo = PGPKeyInfo.builder().build();
 
     @Mock
     private ArtifactSigner36 artifactSigner36;

@@ -33,8 +33,4 @@ public class SignMojoException extends RuntimeException {
     SignMojoException(String message) {
         super(message);
     }
-
-    SignMojoException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!--
-  ~ Copyright 2020 Slawomir Jaranowski
+  ~ Copyright 2020-2021 Slawomir Jaranowski
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -106,7 +106,6 @@
 
     <dependencyManagement>
         <dependencies>
-
             <!-- maven core -->
             <dependency>
                 <groupId>org.apache.maven</groupId>
@@ -176,11 +175,6 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>org.junit-pioneer</groupId>
-                <artifactId>junit-pioneer</artifactId>
-                <version>1.5.0</version>
-            </dependency>
-            <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
                 <version>${mockito.version}</version>
@@ -222,7 +216,6 @@
     </dependencyManagement>
 
     <dependencies>
-
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
@@ -280,11 +273,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit-pioneer</groupId>
-            <artifactId>junit-pioneer</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
@@ -294,7 +282,6 @@
             <artifactId>slf4j-mock</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <repositories>
@@ -356,19 +343,6 @@
             </activation>
             <properties>
                 <invoker.streamLogsOnFailures>true</invoker.streamLogsOnFailures>
-            </properties>
-        </profile>
-        <profile>
-            <!-- https://junit-pioneer.org/docs/environment-variables -->
-            <!-- https://github.com/junit-pioneer/junit-pioneer/issues/387 -->
-            <id>jmv-9+</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            <properties>
-                <opens.util>--add-opens=java.base/java.util=ALL-UNNAMED</opens.util>
-                <opens.lang>--add-opens=java.base/java.lang=ALL-UNNAMED</opens.lang>
-                <argLine>${opens.util} ${opens.lang}</argLine>
             </properties>
         </profile>
 

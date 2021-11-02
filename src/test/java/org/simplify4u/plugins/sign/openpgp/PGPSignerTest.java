@@ -16,6 +16,8 @@
 package org.simplify4u.plugins.sign.openpgp;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -24,6 +26,7 @@ import java.time.ZonedDateTime;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.vavr.control.Try;
 import org.bouncycastle.openpgp.PGPException;
 import org.junit.jupiter.api.Test;
 
@@ -32,15 +35,14 @@ class PGPSignerTest {
     private PGPSigner pgpSigner = new PGPSigner();
 
     @Test
-    void loadKeyWithAllProperties() throws PGPSignerException {
+    void loadKeyWithAllProperties() throws PGPSignerException, IOException {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyId("AC71B3E31C0C0D38")
-                .keyPass("testPass")
-                .keyFile(new File(getClass().getResource("/priv-key.asc").getFile()))
+                .id(0xAC71B3E31C0C0D38L)
+                .pass("testPass")
+                .key(byteFromResource("/priv-key.asc"))
                 .build();
-
 
         // when
         assertThatCode(() -> pgpSigner.setKeyInfo(keyInfo))
@@ -52,10 +54,9 @@ class PGPSignerTest {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyPass("testPass")
-                .keyFile(new File(getClass().getResource("/priv-key.asc").getFile()))
+                .pass("testPass")
+                .key(byteFromResource("/priv-key.asc"))
                 .build();
-
 
         // when
         assertThatCode(() -> pgpSigner.setKeyInfo(keyInfo))
@@ -67,9 +68,8 @@ class PGPSignerTest {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyFile(new File(getClass().getResource("/priv-key-no-pass.asc").getFile()))
+                .key(byteFromResource("/priv-key-no-pass.asc"))
                 .build();
-
 
         // when
         assertThatCode(() -> pgpSigner.setKeyInfo(keyInfo))
@@ -77,11 +77,26 @@ class PGPSignerTest {
     }
 
     @Test
+    void notFoundKeyThrowException() throws PGPSignerException {
+
+        // given
+        PGPKeyInfo keyInfo = PGPKeyInfo.builder()
+                .id(0x1234567890L)
+                .key(byteFromResource("/priv-key-no-pass.asc"))
+                .build();
+
+        // when
+        assertThatCode(() -> pgpSigner.setKeyInfo(keyInfo))
+                .isExactlyInstanceOf(PGPSignerException.class)
+                .hasMessage("Secret key not found");
+    }
+
+    @Test
     void loadSubKeyWithOutPass() throws PGPSignerException {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyFile(new File(getClass().getResource("/priv-sub-key-no-pass.asc").getFile()))
+                .key(byteFromResource("/priv-sub-key-no-pass.asc"))
                 .build();
 
 
@@ -95,10 +110,9 @@ class PGPSignerTest {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyId("0C5CEA1C96038404")
-                .keyFile(new File(getClass().getResource("/priv-sub-key-no-pass.asc").getFile()))
+                .id(0x0C5CEA1C96038404L)
+                .key(byteFromResource("/priv-sub-key-no-pass.asc"))
                 .build();
-
 
         // when
         assertThatThrownBy(() -> pgpSigner.setKeyInfo(keyInfo))
@@ -111,10 +125,9 @@ class PGPSignerTest {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyPass("testPass")
-                .keyFile(new File(getClass().getResource("/priv-key-no-pass.asc").getFile()))
+                .pass("testPass")
+                .key(byteFromResource("/priv-key-no-pass.asc"))
                 .build();
-
 
         // when
         assertThatCode(() -> pgpSigner.setKeyInfo(keyInfo))
@@ -126,9 +139,8 @@ class PGPSignerTest {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyFile(new File(getClass().getResource("/priv-key.asc").getFile()))
+                .key(byteFromResource("/priv-key.asc"))
                 .build();
-
 
         // when
         assertThatThrownBy(() -> pgpSigner.setKeyInfo(keyInfo))
@@ -142,10 +154,9 @@ class PGPSignerTest {
 
         // given
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyPass("xxx")
-                .keyFile(new File(getClass().getResource("/priv-key.asc").getFile()))
+                .pass("xxx")
+                .key(byteFromResource("/priv-key.asc"))
                 .build();
-
 
         // when
         assertThatThrownBy(() -> pgpSigner.setKeyInfo(keyInfo))
@@ -164,8 +175,8 @@ class PGPSignerTest {
                 .toLocalDateTime();
 
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyId("B09391374A115DE2")
-                .keyFile(new File(getClass().getResource("/priv-expired-key-no-pass.asc").getFile()))
+                .id(0xB09391374A115DE2L)
+                .key(byteFromResource("/priv-expired-key-no-pass.asc"))
                 .build();
 
         assertThatThrownBy(() -> pgpSigner.setKeyInfo(keyInfo))
@@ -184,8 +195,8 @@ class PGPSignerTest {
                 .toLocalDateTime();
 
         PGPKeyInfo keyInfo = PGPKeyInfo.builder()
-                .keyId("44A920F7DCC8A31E")
-                .keyFile(new File(getClass().getResource("/priv-expired-key-no-pass.asc").getFile()))
+                .id(0x44A920F7DCC8A31EL)
+                .key(byteFromResource("/priv-expired-key-no-pass.asc"))
                 .build();
 
         assertThatThrownBy(() -> pgpSigner.setKeyInfo(keyInfo))
@@ -195,4 +206,7 @@ class PGPSignerTest {
                         + expiredDateTime);
     }
 
+    private byte[] byteFromResource(String name)  {
+        return Try.of(() -> Files.readAllBytes(new File(getClass().getResource(name).getFile()).toPath())).get();
+    }
 }

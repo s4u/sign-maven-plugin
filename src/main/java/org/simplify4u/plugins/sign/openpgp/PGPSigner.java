@@ -102,7 +102,7 @@ public class PGPSigner {
      */
     private void loadKey() throws IOException, PGPException {
 
-        InputStream inputStream = PGPUtil.getDecoderStream(pgpKeyInfo.getKey());
+        InputStream inputStream = PGPUtil.getDecoderStream(pgpKeyInfo.getKeyStream());
         PGPSecretKeyRingCollection pgpSecretKeyRingCollection = new PGPSecretKeyRingCollection(inputStream,
                 new JcaKeyFingerprintCalculator());
 
