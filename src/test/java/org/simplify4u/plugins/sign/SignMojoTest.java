@@ -15,10 +15,11 @@
  */
 package org.simplify4u.plugins.sign;
 
-import java.io.File;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -26,15 +27,13 @@ import static org.mockito.Mockito.when;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.project.MavenProject;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
+import org.apache.maven.project.MavenProjectHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.simplify4u.plugins.sign.openpgp.PGPSignerKeyNotFoundException;
-import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
+import org.simplify4u.plugins.sign.openpgp.PGPKeyInfo;
 
 @ExtendWith(MockitoExtension.class)
 class SignMojoTest {
@@ -43,13 +42,16 @@ class SignMojoTest {
     private MavenProject project;
 
     @Mock
+    private MavenProjectHelper projectHelper;
+
+    @Mock
     private ArtifactSigner artifactSigner;
 
     @Mock
     private ArtifactSignerFactory artifactSignerFactory;
 
     @Mock
-    private SecDispatcher secDispatcher;
+    private KeyInfoFactory keyInfoFactory;
 
     @InjectMocks
     private SignMojo mojo;
@@ -64,72 +66,58 @@ class SignMojoTest {
         mojo.execute();
 
         // then
-        verifyNoInteractions(artifactSignerFactory, artifactSigner, secDispatcher, project);
+        verifyNoInteractions(artifactSignerFactory, artifactSigner, keyInfoFactory, project);
     }
 
     @Test
-    void noExistingKeyShouldSkipExecution() {
+    void emptyKeyInfoShouldSkipExecution() {
         // given
         mojo.setSkipNoKey(true);
-        mojo.setKeyFile(new File("no-existing-key.asc"));
+        when(keyInfoFactory.buildKeyInfo(any())).thenReturn(PGPKeyInfo.builder().build());
 
         // when
         mojo.execute();
 
         //then
-        verifyNoInteractions(artifactSignerFactory, artifactSigner, secDispatcher, project);
+        verifyNoInteractions(artifactSignerFactory, artifactSigner, project);
     }
 
     @Test
-    void noExistingKeyShouldBreakExecution() {
+    void emptyKeyInfoShouldBreakExecution() {
         // given
         mojo.setSkipNoKey(false);
-        mojo.setKeyFile(new File("no-existing-key.asc"));
+        when(keyInfoFactory.buildKeyInfo(any())).thenReturn(PGPKeyInfo.builder().build());
 
         // when - then
         assertThatThrownBy(() -> mojo.execute())
-                .isExactlyInstanceOf(PGPSignerKeyNotFoundException.class)
-                .hasMessage("key file: no-existing-key.asc not found");
+                .isExactlyInstanceOf(SignMojoException.class)
+                .hasMessage("Required key for signing not found");
 
-        verifyNoInteractions(artifactSignerFactory, artifactSigner, secDispatcher, project);
+        verifyNoInteractions(artifactSignerFactory, artifactSigner, project);
     }
 
-    @Nested
-    class ExecutionTesting {
+    @Test
+    void standardFlow() {
 
-        @BeforeEach
-        void setup() {
-            DefaultArtifact artifact = new DefaultArtifact("groupId", "artifactId", "1.0.0", null, "pom", null,
-                    new DefaultArtifactHandler("pom"));
-            when(project.getGroupId()).thenReturn(artifact.getGroupId());
-            when(project.getArtifactId()).thenReturn(artifact.getArtifactId());
-            when(project.getVersion()).thenReturn(artifact.getVersion());
-            when(project.getArtifact()).thenReturn(artifact);
+        DefaultArtifact artifact = new DefaultArtifact("groupId", "artifactId", "1.0.0", null, "pom", null,
+                new DefaultArtifactHandler("pom"));
+        when(project.getGroupId()).thenReturn(artifact.getGroupId());
+        when(project.getArtifactId()).thenReturn(artifact.getArtifactId());
+        when(project.getVersion()).thenReturn(artifact.getVersion());
+        when(project.getArtifact()).thenReturn(artifact);
 
-            when(artifactSignerFactory.getSigner(any())).thenReturn(artifactSigner);
+        when(keyInfoFactory.buildKeyInfo(any())).thenReturn(PGPKeyInfo.builder().key(new byte[]{1, 2, 3}).build());
 
-            //setup default values of mojo
-            mojo.setKeyFile(new File(getClass().getResource("/priv-key-no-pass.asc").getFile()));
-        }
+        when(artifactSignerFactory.getSigner(any())).thenReturn(artifactSigner);
 
-        @Test
-        void executeWithOutParams() {
+        when(artifactSigner.signArtifact(any())).thenReturn(Collections.singletonList(SignResult.builder().build()));
 
-            mojo.execute();
+        mojo.execute();
 
-            verify(artifactSigner).signArtifact(any());
-            verifyNoInteractions(secDispatcher);
-        }
-
-        @Test
-        void executeWithPassword() throws Exception {
-
-            mojo.setKeyPass("keyPass");
-            mojo.execute();
-
-            verify(artifactSigner).signArtifact(any());
-            verify(secDispatcher).decrypt("keyPass");
-        }
+        verify(artifactSigner).signArtifact(any());
+        verify(projectHelper).attachArtifact(eq(project), any(), any(), any());
     }
 
 }
+
+

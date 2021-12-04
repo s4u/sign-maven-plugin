@@ -16,20 +16,11 @@
 package org.simplify4u.plugins.sign.openpgp;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.InputStream;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 
-import io.vavr.control.Try;
-import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Value;
 
 /**
  * Information about pgp key.
@@ -37,83 +28,25 @@ import lombok.extern.slf4j.Slf4j;
  * @author Slawomir Jaranowski
  */
 
-@Slf4j
-@Getter
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@Value
+@Builder
 public class PGPKeyInfo {
 
-    private static final String SIGN_KEY_ID_ENV = "SIGN_KEY_ID";
-    private static final String SIGN_KEY_ENV = "SIGN_KEY";
-    private static final String SIGN_KEY_PASS_ENV = "SIGN_KEY_PASS";
-
     Long id;
-    char[] pass;
-    InputStream key;
+    String pass;
+    byte[] key;
 
-    @Builder
-    private PGPKeyInfo(String keyId, String keyPass, File keyFile, UnaryOperator<String> passDecryptor) {
+    public boolean isKeyAvailable() {
+        return key != null && key.length > 0;
+    }
 
-        id = Optional.ofNullable(stringFromEnv(SIGN_KEY_ID_ENV).orElse(keyId))
-                .map(PGPKeyInfo::parseKeyId)
-                .orElse(null);
+    public InputStream getKeyStream() {
+        return new ByteArrayInputStream(key);
+    }
 
-        pass = Optional.ofNullable(stringFromEnv(SIGN_KEY_PASS_ENV).orElse(keyPass))
-                .map(Optional.ofNullable(passDecryptor).orElseGet(UnaryOperator::identity))
+    public char[] getPass() {
+        return Optional.ofNullable(pass)
                 .map(String::toCharArray)
                 .orElse(null);
-
-        key = stringFromEnv(SIGN_KEY_ENV)
-                .map(String::trim)
-                .map(PGPKeyInfo::keyFromString)
-                .orElseGet(() -> keyFromFile(keyFile));
-    }
-
-    /**
-     * Read environment variable and filter by "null" string - this value is set be invoker-maven-plugin.
-     * <p>
-     * TODO - remove workaround after fix and release https://issues.apache.org/jira/browse/MINVOKER-273
-     *
-     * @param environmentName a environment variable name
-     *
-     * @return content of environment variable or empty if not exist.
-     */
-    private static Optional<String> stringFromEnv(String environmentName) {
-        Optional<String> returnValue = Optional.ofNullable(System.getenv(environmentName))
-                .map(String::trim)
-                .filter(s -> !"null".equals(s))
-                .filter(s -> !s.isEmpty());
-
-        if (returnValue.isPresent()) {
-            LOGGER.debug("Retrieved {} configuration from environment variable", environmentName);
-        } else {
-            LOGGER.debug("No {} set as environment variable", environmentName);
-        }
-
-        return returnValue;
-    }
-
-    private static InputStream keyFromFile(File keyFile) {
-
-        File file = PGPKeyFileUtil.calculateWithUserHome(keyFile);
-
-        if (!file.exists()) {
-            throw new PGPSignerKeyNotFoundException("key file: " + keyFile + " not found");
-        }
-
-        LOGGER.debug("Read key from file: {}", file);
-
-        return Try.of(() -> Files.readAllBytes(file.toPath()))
-                .map(ByteArrayInputStream::new)
-                .getOrElseThrow(PGPSignerException::new);
-    }
-
-    private static InputStream keyFromString(String key) {
-        return new ByteArrayInputStream(key.getBytes(StandardCharsets.US_ASCII));
-    }
-
-    private static long parseKeyId(String key) {
-        return Try.of(() -> new BigInteger(key, 16))
-                .map(BigInteger::longValue)
-                .getOrElseThrow(e -> new PGPSignerException("Invalid keyId: " + e.getMessage()));
     }
 }

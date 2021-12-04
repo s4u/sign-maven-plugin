@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.simplify4u.plugins.sign.openpgp;
+package org.simplify4u.plugins.sign.utils;
 
 import java.io.File;
 import java.util.stream.Stream;
@@ -25,7 +25,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class PGPKeyFileUtilTest {
+class FileUtilTest {
 
     private static String userHome = System.getProperty("user.home");
 
@@ -52,7 +52,7 @@ class PGPKeyFileUtilTest {
     @MethodSource
     void shouldDetectUserHomeInPath(File in, File out) {
 
-        File file = PGPKeyFileUtil.calculateWithUserHome(in);
+        File file = FileUtil.calculateWithUserHome(in);
         assertThat(file).isEqualTo(out);
     }
 }
