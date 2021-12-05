@@ -57,6 +57,35 @@ public class SignMojo extends AbstractMojo {
     private ArtifactSignerFactory artifactSignerFactory;
 
     /**
+     * <p>A <code>serverId</code> from settings.xml which contains configuration for private key used to signing.</p>
+     *
+     * <p><dl>
+     * <dt>server.username</dt>
+     * <dd>key id - optional value</dd>
+     *
+     * <dt>server.privateKey</dt>
+     * <dd>path to file contains private key</dd>
+     *
+     * <dt>server.passphrase</dt>
+     * <dd>password for decrypting private key</dd>
+     * </dl></p>
+     *
+     * <p>
+     * <b>NOTICE</b> when used <code>serverId</code> data from property
+     * <code>keyId</code>, <code>keyPass</code> and <code>keyFile</code> will not be used.
+     * </p>
+     *
+     * <p>
+     * <b>Environment variable</b> - <code>SIGN_KEY_ID</code>, <code>SIGN_KEY_PASS</code> and <code>SIGN_KEY</code>
+     * have always priority and when will be provided will be used <b>first</b>.
+     * </p>
+     *
+     * @since 0.4.0
+     */
+    @Parameter(property = "sign.serverId")
+    private String serverId;
+
+    /**
      * <p><code>keyId</code> used for signing. If not provided first key from <code>keyFile</code> will be taken.</p>
      *
      * <p>This value can be delivered by environment variable <code>SIGN_KEY_ID</code>.</p>
@@ -133,6 +162,7 @@ public class SignMojo extends AbstractMojo {
 
         PGPKeyInfo keyInfo = keyInfoFactory.buildKeyInfo(
                 KeyInfoFactory.KeyInfoRequest.builder()
+                        .serverId(serverId)
                         .id(keyId)
                         .pass(keyPass)
                         .file(keyFile)

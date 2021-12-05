@@ -16,7 +16,9 @@
 
 def buildLog = new File( basedir, 'build.log' ).text
 
-assert buildLog.contains('SignMojoException: Invalid encrypted password')
+assert buildLog.contains('[DEBUG] server id: server-id-not-exist not found in settings.xml')
+assert buildLog.contains('[INFO] Sign - key not found - skip execution')
 
 def target = new File( basedir, "target" )
 assert !target.exists()
+

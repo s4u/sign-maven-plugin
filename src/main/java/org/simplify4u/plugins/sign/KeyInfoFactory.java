@@ -28,6 +28,9 @@ import io.vavr.control.Try;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.settings.Server;
+import org.apache.maven.settings.Settings;
 import org.simplify4u.plugins.sign.openpgp.PGPKeyInfo;
 import org.simplify4u.plugins.sign.utils.Environment;
 import org.simplify4u.plugins.sign.utils.FileUtil;
@@ -51,12 +54,17 @@ public class KeyInfoFactory {
     @Inject
     private SecDispatcher secDispatcher;
 
+    @Inject
+    private MavenSession mavenSession;
+
     /**
      * Value class for data needed to build key info.
      */
     @Value
     @Builder
     public static class KeyInfoRequest {
+
+        String serverId;
         String id;
         String pass;
         File file;
@@ -71,30 +79,52 @@ public class KeyInfoFactory {
      */
     public PGPKeyInfo buildKeyInfo(KeyInfoRequest keyInfoRequest) {
 
+        final String id;
+        final String pass;
+        final File keyFile;
+
+        // serverId was provided - so all data will be read from settings
+        if (keyInfoRequest.getServerId() != null) {
+            Settings settings = mavenSession.getSettings();
+            Optional<Server> server = Optional.ofNullable(settings.getServer(keyInfoRequest.getServerId()));
+            if (server.isPresent()) {
+                LOGGER.debug("server id: {} found - read key info from settings.xml", keyInfoRequest.getServerId());
+            } else {
+                LOGGER.debug("server id: {} not found in settings.xml", keyInfoRequest.getServerId());
+            }
+            id = server.map(Server::getUsername).orElse(null);
+            pass = server.map(Server::getPassphrase).orElse(null);
+            keyFile = server.map(Server::getPrivateKey).map(File::new).orElse(null);
+        } else {
+            id = keyInfoRequest.getId();
+            pass = keyInfoRequest.getPass();
+            keyFile = keyInfoRequest.getFile();
+        }
+
         return PGPKeyInfo.builder()
-                .id(resolveKeyId(keyInfoRequest))
-                .pass(resolveKeyPass(keyInfoRequest))
-                .key(resolveKey(keyInfoRequest))
+                .id(resolveKeyId(id))
+                .pass(resolveKeyPass(pass))
+                .key(resolveKey(keyFile))
                 .build();
     }
 
-    private Long resolveKeyId(KeyInfoRequest keyInfoRequest) {
-        return Optional.ofNullable(environment.getEnv(SIGN_KEY_ID_ENV).orElseGet(keyInfoRequest::getId))
+    private Long resolveKeyId(String id) {
+        return Optional.ofNullable(environment.getEnv(SIGN_KEY_ID_ENV).orElse(id))
                 .map(KeyInfoFactory::parseKeyId)
                 .orElse(null);
     }
 
-    private String resolveKeyPass(KeyInfoRequest keyInfoRequest) {
-        return Optional.ofNullable(environment.getEnv(SIGN_KEY_PASS_ENV).orElseGet(keyInfoRequest::getPass))
+    private String resolveKeyPass(String pass) {
+        return Optional.ofNullable(environment.getEnv(SIGN_KEY_PASS_ENV).orElse(pass))
                 .map(this::decryptPass)
                 .orElse(null);
     }
 
-    private byte[] resolveKey(KeyInfoRequest keyInfoRequest) {
+    private byte[] resolveKey(File keyFile) {
         return environment.getEnv(SIGN_KEY_ENV)
                 .map(String::trim)
                 .map(KeyInfoFactory::keyFromString)
-                .orElseGet(() -> keyFromFile(keyInfoRequest.getFile()));
+                .orElseGet(() -> keyFromFile(keyFile));
     }
 
     private String decryptPass(String pass) {
@@ -114,13 +144,17 @@ public class KeyInfoFactory {
 
     private static byte[] keyFromFile(File keyFile) {
 
-        File file = FileUtil.calculateWithUserHome(keyFile);
+        if (keyFile != null) {
+            File file = FileUtil.calculateWithUserHome(keyFile);
 
-        if (file.exists()) {
-            LOGGER.debug("Read key from file: {}", file);
-            return Try.of(() -> Files.readAllBytes(file.toPath())).get();
+            if (file.exists()) {
+                LOGGER.debug("Read key from file: {}", file);
+                return Try.of(() -> Files.readAllBytes(file.toPath())).get();
+            } else {
+                LOGGER.debug("Key file: {} not exist", keyFile);
+            }
         } else {
-            LOGGER.debug("Key file: {} not exist", keyFile);
+            LOGGER.debug("Key file not provided");
         }
 
         return new byte[]{};

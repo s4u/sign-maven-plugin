@@ -25,6 +25,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.settings.Server;
+import org.apache.maven.settings.Settings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,6 +58,12 @@ class KeyInfoFactoryTest {
     @Mock
     private SecDispatcher secDispatcher;
 
+    @Mock
+    private Settings settings;
+
+    @Mock
+    private MavenSession mavenSession;
+
     @InjectMocks
     private KeyInfoFactory keyInfoFactory;
 
@@ -73,6 +82,34 @@ class KeyInfoFactoryTest {
                 .pass(KEY_PASS_STR)
                 .file(KEY_FILE)
                 .build();
+
+        PGPKeyInfo keyInfo = keyInfoFactory.buildKeyInfo(keyInfoRequest);
+
+        // then
+        assertThat(keyInfo.getId()).isEqualTo(KEY_ID);
+        assertThat(keyInfo.getPass()).isEqualTo(KEY_PASS);
+        assertThat(keyInfo.getKey()).containsExactly(Files.readAllBytes(KEY_FILE.toPath()));
+        assertThat(keyInfo.isKeyAvailable()).isTrue();
+    }
+
+    @Test
+    void keyFromFileWithServerId() throws IOException {
+
+        // given
+        KeyInfoRequest keyInfoRequest = KeyInfoRequest.builder()
+                .serverId("serverId")
+                .id("aaa")
+                .pass("bbb")
+                .file(new File("fff"))
+                .build();
+
+        Server server = new Server();
+        server.setUsername(KEY_ID_STR);
+        server.setPassphrase(KEY_PASS_STR);
+        server.setPrivateKey(KEY_FILE.getAbsolutePath());
+
+        when(mavenSession.getSettings()).thenReturn(settings);
+        when(settings.getServer("serverId")).thenReturn(server);
 
         PGPKeyInfo keyInfo = keyInfoFactory.buildKeyInfo(keyInfoRequest);
 
@@ -114,6 +151,36 @@ class KeyInfoFactoryTest {
         mockEnvValue("SIGN_KEY_ID", KEY_ID_STR);
         mockEnvValue("SIGN_KEY_PASS", KEY_PASS_STR);
 
+
+        // when
+        PGPKeyInfo keyInfo = keyInfoFactory.buildKeyInfo(keyInfoRequest);
+
+        // then
+        assertThat(keyInfo.getId()).isEqualTo(KEY_ID);
+        assertThat(keyInfo.getPass()).isEqualTo(KEY_PASS);
+        assertThat(keyInfo.getKey()).containsExactly("signKey from environment".getBytes());
+        assertThat(keyInfo.isKeyAvailable()).isTrue();
+    }
+
+    @Test
+    void keyDataFromEnvWithServerId() {
+
+        // given
+        KeyInfoRequest keyInfoRequest = KeyInfoRequest.builder()
+                .serverId("serverId")
+                .build();
+
+        mockEnvValue("SIGN_KEY", "signKey from environment");
+        mockEnvValue("SIGN_KEY_ID", KEY_ID_STR);
+        mockEnvValue("SIGN_KEY_PASS", KEY_PASS_STR);
+
+        Server server = new Server();
+        server.setUsername("xxx");
+        server.setPassphrase("ppp");
+        server.setPrivateKey("kkk");
+
+        when(mavenSession.getSettings()).thenReturn(settings);
+        when(settings.getServer("serverId")).thenReturn(server);
 
         // when
         PGPKeyInfo keyInfo = keyInfoFactory.buildKeyInfo(keyInfoRequest);

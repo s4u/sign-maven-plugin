@@ -86,7 +86,6 @@ gpg --armor --export-secret-subkeys 8F56B3C83F55E1A3!
 
 Like for master key you can store your `subkey` in `~/.m2/sign-key.asc` or set as `SIGN_KEY` environment variable.
 
-
 ## Publishing public key 
 
 Finally, you should publish your master public key to a keys server network 

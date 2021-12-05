@@ -48,6 +48,23 @@
         </dependency>
 
         <dependency>
+            <groupId>test-group</groupId>
+            <artifactId>pom-packaging-serverId</artifactId>
+            <version>1.1.1</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>test-group</groupId>
+            <artifactId>pom-packaging-serverId-mod1</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>test-group</groupId>
+            <artifactId>pom-packaging-serverId-mod2</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>test-group-sub</groupId>
             <artifactId>standard-packaging</artifactId>
             <version>1.1.1</version>
@@ -81,7 +98,7 @@
                         </goals>
                         <configuration>
                             <pgpKeysCachePath>@project.build.directory@/keys-cache</pgpKeysCachePath>
-                            <pgpKeyServer>http://dumy.no.server.example.com</pgpKeyServer>
+                            <pgpKeyServer>https://dumy.no.server.example.com</pgpKeyServer>
                             <keysMapLocation>${project.basedir}/keys-map.txt</keysMapLocation>
                         </configuration>
                     </execution>
