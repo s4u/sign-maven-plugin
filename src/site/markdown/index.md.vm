@@ -1,8 +1,8 @@
 Introduction
 ============
 
-`Sign Maven Plugin` allows you to creates Open PGP / GPG signatures for all of the project's artifacts
-without any external software.
+`Sign Maven Plugin` allows you to creates Open PGP / GPG signatures for all of the project's artifacts without any
+external software.
 
 This plugin can replace **maven-gpg-plugin** in an easy way and provide new features.
 
@@ -10,18 +10,90 @@ Feature
 -------
 
 - all the signing operations are done using `Bouncy Castle`
-- support Maven `3.6` and is ready for next version `4.0` of Maven  with `Consumer POM`
+- support Maven `3.6` and is ready for next version `4.0` of Maven with `Consumer POM`
 - support `subkey` for signing
-- easy to use on CI system, configuration can be provided by environment variables 
-- key passphrase can be encrypted by standard Maven [Password Encryption](https://maven.apache.org/guides/mini/guide-encryption.html)
+- easy to use on CI system, configuration can be provided by environment variables
+- key passphrase can be encrypted by standard
+  Maven [Password Encryption](https://maven.apache.org/guides/mini/guide-encryption.html)
 - no needed store private key on CI system - you can use key from environment variable
- 
-Usage
------
 
-#[[###]]# Key configuration provided in pom
+Usage
+=====
+
+Key preparation
+---------------
+
+Before begin please read: [Open PGP / GPG private key preparation](./key-prepare.html)
+
+Skip execution on missing key
+-----------------------------
+
+Signing configuration in the most time is prepared for production environment. In order to simplify configuration, by
+default, plugin skip executions if private key was not found. Only information about missing key is displayed.
+
+You can change this by setting `skipNoKey` options to `false`.
+
+Key configuration provided in environment variables
+---------------------------------------------------
+
+Key configuration can be provided by environment variables: `SIGN_KEY`, `SIGN_KEY_ID`, `SIGN_KEY_PASS`.
+
+**NOTICE**
+
+- When using environment variables for configuration, `SIGN_KEY` - must contain private **key content** - not file path
+  for key
+- Configuration in environment variables have always priority then another configuration, so if will be provided
+  **will be used first**
+
+Your pom configuration can be simplified to:
 
 ```xml
+
+<plugins>
+    <plugin>
+        <groupId>org.simplify4u.plugins</groupId>
+        <artifactId>sign-maven-plugin</artifactId>
+        <version>${project.version}</version>
+        <executions>
+            <execution>
+                <goals>
+                    <goal>sign</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+    ...
+</plugins>
+```
+
+Key configuration provided in settings.xml
+------------------------------------------
+
+**NOTICE**
+
+- When you use *serverId* option, rest plugin configuration will be not used. **All data** for key must be provided
+  by `settings.xml`
+- Configured environment variables can overwrite information about key
+
+You can define server entry in your `settings.xml`, like:
+
+```xml
+
+<settings>
+    ...
+    <servers>
+        <server>
+            <id>sign-key-id</id>
+            <username><!-- key id in hex, optional --></username>
+            <passphrase><!-- private key passphrase, can be encrypted --></passphrase>
+            <privateKey><!-- private key file location --></privateKey>
+        </server>
+    </servers>
+</settings>
+```
+
+```xml
+
 <plugins>
     <plugin>
         <groupId>org.simplify4u.plugins</groupId>
@@ -33,9 +105,8 @@ Usage
                     <goal>sign</goal>
                 </goals>
                 <configuration>
-                    <keyId><!-- key id in hex --></keyId>
-                    <keyPass><!-- private key passphrase --></keyPass>
-                    <keyFile><!-- private key file location --></keyFile>
+                    <!-- the same id as in settings.xml -->
+                    <serverId>sign-key-id</serverId>
                 </configuration>
             </execution>
         </executions>
@@ -44,15 +115,15 @@ Usage
 </plugins>
 ```
 
-#[[###]]# Key configuration provided in environment variables
+Key configuration provided in pom
+---------------------------------
 
-Key configuration can be provided by environment variables: `SIGN_KEY`, `SIGN_KEY_ID`, `SIGN_KEY_PASS`.
+**NOTICE**
 
-When using environment variables for configuration, `SIGN_KEY` - must contain private key content - not file path for key
-
-So your pom configuration can be simplified to:
+- Configured environment variables can overwrite information about key
 
 ```xml
+
 <plugins>
     <plugin>
         <groupId>org.simplify4u.plugins</groupId>
@@ -63,6 +134,11 @@ So your pom configuration can be simplified to:
                 <goals>
                     <goal>sign</goal>
                 </goals>
+                <configuration>
+                    <keyId><!-- key id in hex, optional --></keyId>
+                    <keyPass><!-- private key passphrase, can be encrypted --></keyPass>
+                    <keyFile><!-- private key file location --></keyFile>
+                </configuration>
             </execution>
         </executions>
     </plugin>
