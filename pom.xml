@@ -95,7 +95,7 @@
     <properties>
 
         <maven.version>3.6.0</maven.version>
-        <mockito.version>4.1.0</mockito.version>
+        <mockito.version>4.2.0</mockito.version>
         <pgpverify-maven-plugin.version>1.15.0</pgpverify-maven-plugin.version>
 
         <project.build.outputTimestamp>2021-04-05T19:46:57Z</project.build.outputTimestamp>
