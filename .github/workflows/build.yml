@@ -22,5 +22,4 @@ jobs:
       OSS_USER:       ${{ secrets.OSS_USER }}
       OSS_PASS:       ${{ secrets.OSS_PASS }}
       TECH_TOKEN:     ${{ secrets.TECH_TOKEN }}
-      GITHUB_TOKEN:   ${{ secrets.GITHUB_TOKEN }}
 
