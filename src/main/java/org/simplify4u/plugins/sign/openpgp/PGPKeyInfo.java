@@ -36,14 +36,29 @@ public class PGPKeyInfo {
     String pass;
     byte[] key;
 
+    /**
+     * Check key.
+     *
+     * @return true if key is available
+     */
     public boolean isKeyAvailable() {
         return key != null && key.length > 0;
     }
 
+    /**
+     * Key as stream.
+     *
+     * @return the {@link InputStream} with key content
+     */
     public InputStream getKeyStream() {
         return new ByteArrayInputStream(key);
     }
 
+    /**
+     * Key pass.
+     *
+     * @return the pass
+     */
     public char[] getPass() {
         return Optional.ofNullable(pass)
                 .map(String::toCharArray)

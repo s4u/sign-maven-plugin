@@ -56,6 +56,27 @@
             </plugin>
 
             <plugin>
+                <groupId>net.nicoulaj.maven.plugins</groupId>
+                <artifactId>checksum-maven-plugin</artifactId>
+                <version>1.11</version>
+                <executions>
+                    <execution>
+                        <id>checksum</id>
+                        <goals>
+                            <goal>artifacts</goal>
+                        </goals>
+                        <phase>post-integration-test</phase>
+                        <configuration>
+                            <algorithms>
+                                <algorithm>SHA-512</algorithm>
+                            </algorithms>
+                            <attachChecksums>true</attachChecksums>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
                 <groupId>org.simplify4u.plugins</groupId>
                 <artifactId>sign-maven-plugin</artifactId>
                 <version>@project.version@</version>

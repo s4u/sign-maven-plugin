@@ -16,9 +16,12 @@
 package org.simplify4u.plugins.sign;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import lombok.AccessLevel;
@@ -32,6 +35,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 import org.apache.maven.project.artifact.ProjectArtifact;
+import org.codehaus.plexus.util.SelectorUtils;
 import org.simplify4u.plugins.sign.openpgp.PGPKeyInfo;
 
 /**
@@ -80,7 +84,7 @@ public class SignMojo extends AbstractMojo {
      * have always priority and when will be provided will be used <b>first</b>.
      * </p>
      *
-     * @since 0.4.0
+     * @since 1.0.0
      */
     @Parameter(property = "sign.serverId")
     private String serverId;
@@ -152,6 +156,29 @@ public class SignMojo extends AbstractMojo {
     @Parameter(property = "sign.skipNoKey", defaultValue = "true")
     private boolean skipNoKey;
 
+    /**
+     * A list of files to exclude from being signed. Can contain Ant-style wildcards and double wildcards.
+     *
+     * @since 1.0.0
+     */
+    @Parameter(defaultValue = "**/*.md5,**/*.sha1,**/*.sha256,**/*.sha512,**/*.asc")
+    private List<String> excludes = Collections.emptyList();
+
+    /**
+     * Set excludes list.
+     *
+     * @param excludes a list from plugin configuration
+     */
+    public void setExcludes(List<String> excludes) {
+
+        String from = File.separatorChar == '/' ? "\\\\" : "/";
+
+        // normalize excludes for current file separator
+        this.excludes = excludes.stream()
+                .map(s -> s.replace(from, File.separator))
+                .collect(Collectors.toList());
+    }
+
     @Override
     public void execute() {
 
@@ -187,9 +214,49 @@ public class SignMojo extends AbstractMojo {
 
         // sign and attach signature to project
         artifactsToSign.stream()
+                .map(SignMojo::verifyArtifact)
+                .filter(this::shouldBeSigned)
                 .map(artifactSigner::signArtifact)
                 .flatMap(List::stream)
                 .forEach(this::attachSignResult);
+    }
+
+    /**
+     * Check if artifact has correct data.
+     *
+     * @param artifact an artifact to check
+     *
+     * @return the same artifact if is acceptable
+     */
+    private static Artifact verifyArtifact(Artifact artifact) {
+
+        if (artifact == null) {
+            throw new SignMojoException("null artifacts ...");
+        }
+
+        if (artifact.getFile() == null) {
+            throw new SignMojoException("Artifact: " + artifact + " has no file");
+        }
+
+        return artifact;
+    }
+
+    /**
+     * Check if artifact should be signed.
+     */
+    private boolean shouldBeSigned(Artifact artifact) {
+
+        final Path projectBasePath = project.getBasedir().toPath();
+        final Path artifactPath = artifact.getFile().toPath();
+        final String relativeArtifactPath = projectBasePath.relativize(artifactPath).toString();
+
+        boolean shouldSign = excludes.stream()
+                .noneMatch(exclude -> SelectorUtils.matchPath(exclude, relativeArtifactPath));
+
+        LOGGER.debug("Artifact: {} with relativeArtifactPath: {} shouldSign: {} due to excludes: {}",
+                artifact, relativeArtifactPath, shouldSign, excludes);
+
+        return shouldSign;
     }
 
     /**

@@ -18,10 +18,15 @@ import java.nio.file.Files
 def target = basedir.toPath().resolve( "target" )
 def pomSignature = target.resolve( "standard-packaging-1.1.1.pom.asc" )
 def jarSignature = target.resolve( "standard-packaging-1.1.1.jar.asc" )
+def jarSha512 = target.resolve( "standard-packaging-1.1.1.jar.sha512" )
+def jarSha512Signature = target.resolve( "standard-packaging-1.1.1.jar.sha512.asc" )
 def datSignature = target.resolve( "standard-packaging-1.1.1.dat.asc" )
 def c1DatSignature = target.resolve( "standard-packaging-1.1.1-c1.dat.asc" )
 
 assert Files.exists( pomSignature )
 assert Files.exists( jarSignature )
+assert Files.exists( jarSha512 )
+assert !Files.exists( jarSha512Signature )
 assert Files.exists( datSignature )
 assert Files.exists( c1DatSignature )
+
