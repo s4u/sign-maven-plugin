@@ -46,8 +46,6 @@ public class ArtifactSigner40 extends ArtifactSigner {
     public List<SignResult> signArtifact(org.apache.maven.artifact.Artifact artifact) {
         LOGGER.info("Signing artifact: {}", artifact);
 
-        verifyArtifact(artifact);
-
         Artifact srcArtifact = mArtifactToAether(artifact);
 
         Collection<FileTransformer> transformersForArtifact = session.getRepositorySession()

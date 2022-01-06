@@ -39,8 +39,6 @@ public class ArtifactSigner36 extends ArtifactSigner {
     public List<SignResult> signArtifact(Artifact artifact) {
         LOGGER.info("Signing artifact: {}", artifact);
 
-        verifyArtifact(artifact);
-
         try (InputStream artifactInputStream = new BufferedInputStream(
                 Files.newInputStream(artifact.getFile().toPath()))) {
 

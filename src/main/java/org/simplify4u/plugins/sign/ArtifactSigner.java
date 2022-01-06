@@ -47,21 +47,10 @@ public abstract class ArtifactSigner {
     protected PGPSigner pgpSigner;
 
     /**
-     * Check if artifact has correct data.
-     *
-     * @param artifact an artifact to sign
+     * Convert artifact from Maven to aether space.
+     * @param artifact a input artifact
+     * @return new aether artifact
      */
-    protected static void verifyArtifact(Artifact artifact) {
-
-        if (artifact == null) {
-            throw new SignMojoException("null artifacts ...");
-        }
-
-        if (artifact.getFile() == null) {
-            throw new SignMojoException("Artifact: " + artifact + " has no file");
-        }
-    }
-
     protected org.eclipse.aether.artifact.Artifact mArtifactToAether(Artifact artifact) {
         return new org.eclipse.aether.artifact.DefaultArtifact(
                 artifact.getGroupId(),
