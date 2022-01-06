@@ -83,6 +83,25 @@
             <classifier>c1</classifier>
         </dependency>
 
+        <dependency>
+            <groupId>test-group</groupId>
+            <artifactId>issue-105-parent</artifactId>
+            <type>pom</type>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>test-group</groupId>
+            <artifactId>issue-105-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>test-group</groupId>
+            <artifactId>issue-105-features</artifactId>
+            <version>1.0.0</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+        </dependency>
+
     </dependencies>
 
     <build>

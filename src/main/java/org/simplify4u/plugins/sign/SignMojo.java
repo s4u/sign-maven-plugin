@@ -208,8 +208,18 @@ public class SignMojo extends AbstractMojo {
         // collect artifact to sign
         Set<Artifact> artifactsToSign = new HashSet<>();
 
-        artifactsToSign.add(new ProjectArtifact(project));
-        artifactsToSign.add(project.getArtifact());
+        ProjectArtifact projectArtifact = new ProjectArtifact(project);
+        artifactsToSign.add(projectArtifact);
+
+        Artifact artifact = project.getArtifact();
+        if (artifact.getFile() != null) {
+            artifactsToSign.add(artifact);
+        } else {
+            if (!artifact.equals(projectArtifact)) {
+                LOGGER.info("Primary artifact doesn't have the file to sign, continue with attached artifacts.");
+            }
+        }
+
         artifactsToSign.addAll(project.getAttachedArtifacts());
 
         // sign and attach signature to project
