@@ -39,9 +39,9 @@
                             <goal>sign</goal>
                         </goals>
                         <configuration>
-                            <keyId>AC71B3E31C0C0D38</keyId>
-                            <keyPass>{p01Vm25gEoIH/wDlR3hWNhOH5mn4PBEnSFEtH96k1Yw=}</keyPass>
-                            <keyFile>@project.basedir@/src/test/resources/priv-key.asc</keyFile>
+                            <keyId>2F49C30662665AE7</keyId>
+                            <keyPass>{oXM6vjtDM/gH+nFoDVKgmZ2ZTt5YfhQg/xbhvb4uIbM=}</keyPass>
+                            <keyFile>@project.basedir@/src/test/resources/priv-ed25519.asc</keyFile>
                         </configuration>
                     </execution>
 
