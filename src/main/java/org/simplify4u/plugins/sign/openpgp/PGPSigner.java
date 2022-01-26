@@ -44,9 +44,10 @@ import org.bouncycastle.openpgp.PGPSignatureGenerator;
 import org.bouncycastle.openpgp.PGPSignatureSubpacketGenerator;
 import org.bouncycastle.openpgp.PGPSignatureSubpacketVector;
 import org.bouncycastle.openpgp.PGPUtil;
-import org.bouncycastle.openpgp.operator.jcajce.JcaKeyFingerprintCalculator;
-import org.bouncycastle.openpgp.operator.jcajce.JcaPGPContentSignerBuilder;
-import org.bouncycastle.openpgp.operator.jcajce.JcePBESecretKeyDecryptorBuilder;
+import org.bouncycastle.openpgp.operator.bc.BcKeyFingerprintCalculator;
+import org.bouncycastle.openpgp.operator.bc.BcPBESecretKeyDecryptorBuilder;
+import org.bouncycastle.openpgp.operator.bc.BcPGPContentSignerBuilder;
+import org.bouncycastle.openpgp.operator.bc.BcPGPDigestCalculatorProvider;
 
 /**
  * Signing data by PGP.
@@ -104,7 +105,7 @@ public class PGPSigner {
 
         InputStream inputStream = PGPUtil.getDecoderStream(pgpKeyInfo.getKeyStream());
         PGPSecretKeyRingCollection pgpSecretKeyRingCollection = new PGPSecretKeyRingCollection(inputStream,
-                new JcaKeyFingerprintCalculator());
+                new BcKeyFingerprintCalculator());
 
         Long keyId = pgpKeyInfo.getId();
         Optional<PGPSecretKey> secretKeyOptional;
@@ -136,8 +137,8 @@ public class PGPSigner {
 
         verifyKeyExpiration(secretKey, secretKeyRing);
 
-        pgpPrivateKey = secretKey
-                .extractPrivateKey(new JcePBESecretKeyDecryptorBuilder().build(pgpKeyInfo.getPass()));
+        pgpPrivateKey = secretKey.extractPrivateKey(
+                new BcPBESecretKeyDecryptorBuilder(new BcPGPDigestCalculatorProvider()).build(pgpKeyInfo.getPass()));
     }
 
     /**
@@ -151,7 +152,7 @@ public class PGPSigner {
     public void sign(InputStream inputStream, Path outputPath) {
 
         PGPSignatureGenerator sGen = new PGPSignatureGenerator(
-                new JcaPGPContentSignerBuilder(secretKey.getPublicKey().getAlgorithm(), HashAlgorithmTags.SHA512));
+                new BcPGPContentSignerBuilder(secretKey.getPublicKey().getAlgorithm(), HashAlgorithmTags.SHA512));
 
         try {
             sGen.init(PGPSignature.BINARY_DOCUMENT, pgpPrivateKey);
