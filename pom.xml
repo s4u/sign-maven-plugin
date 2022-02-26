@@ -460,7 +460,7 @@
                                     <cloneProjectsTo>${project.build.directory}/it4</cloneProjectsTo>
                                     <localRepositoryPath>${project.build.directory}/it4-repo</localRepositoryPath>
                                     <reportsDirectory>${project.build.directory}/invoker-reports4</reportsDirectory>
-                                    <mavenHome>${project.build.directory}/maven4/apache-maven</mavenHome>
+                                    <mavenHome>${project.build.directory}/maven4/apache-maven-4.0.0-alpha-1-SNAPSHOT</mavenHome>
                                 </configuration>
                             </execution>
                         </executions>
