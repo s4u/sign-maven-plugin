@@ -27,7 +27,7 @@
 
     <groupId>org.simplify4u.plugins</groupId>
     <artifactId>sign-maven-plugin</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
     <packaging>maven-plugin</packaging>
 
     <name>Sign Maven Plugin</name>
@@ -82,7 +82,7 @@
         <connection>scm:git:git@github.com:s4u/sign-maven-plugin.git</connection>
         <developerConnection>${project.scm.connection}</developerConnection>
         <url>https://github.com/s4u/sign-maven-plugin</url>
-        <tag>HEAD</tag>
+        <tag>v1.0.1</tag>
     </scm>
 
     <distributionManagement>
@@ -98,7 +98,7 @@
         <mockito.version>4.3.1</mockito.version>
         <pgpverify-maven-plugin.version>1.16.0</pgpverify-maven-plugin.version>
 
-        <project.build.outputTimestamp>2022-01-07T11:04:12Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2022-02-27T13:30:29Z</project.build.outputTimestamp>
 
         <!-- default value is needed when jacoco is not executed -->
         <argLine />
