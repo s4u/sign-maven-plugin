@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.simplify4u</groupId>
         <artifactId>parent</artifactId>
-        <version>2.19.0</version>
+        <version>2.20.0</version>
         <relativePath />
     </parent>
 
@@ -142,14 +142,15 @@
             <!-- external library -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
-                <artifactId>bcpg-jdk15on</artifactId>
-                <version>1.70</version>
+                <artifactId>bcpg-jdk18on</artifactId>
+                <version>1.77</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.28</version>
+                <version>1.18.30</version>
             </dependency>
+            <!-- Maven 3.x only support slf4j 1.7.x-->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
@@ -165,12 +166,12 @@
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-core</artifactId>
-                <version>3.24.2</version>
+                <version>3.25.0</version>
             </dependency>
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>5.9.3</version>
+                <version>5.10.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -194,7 +195,7 @@
             <dependency>
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-component-annotations</artifactId>
-                <version>2.1.1</version>
+                <version>2.2.0</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.plexus</groupId>
@@ -245,7 +246,7 @@
 
         <dependency>
             <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpg-jdk15on</artifactId>
+            <artifactId>bcpg-jdk18on</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
