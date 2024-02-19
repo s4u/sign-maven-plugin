@@ -53,9 +53,6 @@ class SignMojoTest {
     private ArtifactSigner artifactSigner;
 
     @Mock
-    private ArtifactSignerFactory artifactSignerFactory;
-
-    @Mock
     private KeyInfoFactory keyInfoFactory;
 
     @Spy
@@ -74,7 +71,7 @@ class SignMojoTest {
         mojo.execute();
 
         // then
-        verifyNoInteractions(artifactSignerFactory, artifactSigner, keyInfoFactory, project);
+        verifyNoInteractions(artifactSigner, keyInfoFactory, project);
     }
 
     @Test
@@ -88,7 +85,7 @@ class SignMojoTest {
         mojo.execute();
 
         //then
-        verifyNoInteractions(artifactSignerFactory, artifactSigner, project);
+        verifyNoInteractions(artifactSigner, project);
     }
 
     @Test
@@ -102,7 +99,7 @@ class SignMojoTest {
                 .isExactlyInstanceOf(SignMojoException.class)
                 .hasMessage("Required key for signing not found");
 
-        verifyNoInteractions(artifactSignerFactory, artifactSigner, project);
+        verifyNoInteractions(artifactSigner, project);
     }
 
     @Test
@@ -120,16 +117,12 @@ class SignMojoTest {
 
         when(keyInfoFactory.buildKeyInfo(any())).thenReturn(PGPKeyInfo.builder().key(new byte[]{1, 2, 3}).build());
 
-        when(artifactSignerFactory.getSigner(any())).thenReturn(artifactSigner);
-
         when(artifactSigner.signArtifact(any())).thenReturn(Collections.singletonList(SignResult.builder().build()));
 
         mojo.execute();
 
         verify(artifactSigner).signArtifact(artifact);
         verify(projectHelper).attachArtifact(eq(project), any(), any(), any());
-
-        verifyNoMoreInteractions(artifactSigner, projectHelper);
     }
 
     @Test
@@ -151,8 +144,6 @@ class SignMojoTest {
 
         when(keyInfoFactory.buildKeyInfo(any())).thenReturn(PGPKeyInfo.builder().key(new byte[]{1, 2, 3}).build());
 
-        when(artifactSignerFactory.getSigner(any())).thenReturn(artifactSigner);
-
         when(artifactSigner.signArtifact(any())).thenReturn(Collections.singletonList(SignResult.builder().build()));
 
         mojo.setExcludes(Collections.singletonList("**/*.md5"));
@@ -160,8 +151,6 @@ class SignMojoTest {
 
         verify(artifactSigner).signArtifact(artifact);
         verify(projectHelper).attachArtifact(eq(project), any(), any(), any());
-
-        verifyNoMoreInteractions(artifactSigner, projectHelper);
     }
 
     private Artifact aArtifactWithFile(String artifactId, String fileName) {

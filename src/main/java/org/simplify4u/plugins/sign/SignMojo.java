@@ -58,7 +58,7 @@ public class SignMojo extends AbstractMojo {
     private KeyInfoFactory keyInfoFactory;
 
     @Inject
-    private ArtifactSignerFactory artifactSignerFactory;
+    private ArtifactSigner artifactSigner;
 
     /**
      * <p>A <code>serverId</code> from settings.xml which contains configuration for private key used to signing.</p>
@@ -203,7 +203,7 @@ public class SignMojo extends AbstractMojo {
             throw new SignMojoException("Required key for signing not found");
         }
 
-        ArtifactSigner artifactSigner = artifactSignerFactory.getSigner(keyInfo);
+        artifactSigner.setKeyInfo(keyInfo);
 
         // collect artifact to sign
         Set<Artifact> artifactsToSign = new HashSet<>();
