@@ -18,5 +18,6 @@ def buildLog = new File( basedir, 'build.log' ).text
 
 assert buildLog.contains('SignMojoException: Invalid encrypted password')
 
-def target = new File( basedir, "target" )
-assert !target.exists()
+// asserting build log is enough: Maven4 creates target for project local reposes
+// def target = new File( basedir, "target" )
+//assert !target.exists()

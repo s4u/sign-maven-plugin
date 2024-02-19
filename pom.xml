@@ -95,6 +95,7 @@
     <properties>
 
         <maven.version>3.6.0</maven.version>
+        <maven4.version>4.0.0-alpha-12</maven4.version>
         <mockito.version>4.11.0</mockito.version>
         <pgpverify-maven-plugin.version>1.17.0</pgpverify-maven-plugin.version>
 
@@ -389,7 +390,7 @@
                                         <artifactItem>
                                             <groupId>org.apache.maven</groupId>
                                             <artifactId>apache-maven</artifactId>
-                                            <version>4.0.0-alpha-1-SNAPSHOT</version>
+                                            <version>${maven4.version}</version>
                                             <type>zip</type>
                                             <classifier>bin</classifier>
                                         </artifactItem>
@@ -461,7 +462,7 @@
                                     <cloneProjectsTo>${project.build.directory}/it4</cloneProjectsTo>
                                     <localRepositoryPath>${project.build.directory}/it4-repo</localRepositoryPath>
                                     <reportsDirectory>${project.build.directory}/invoker-reports4</reportsDirectory>
-                                    <mavenHome>${project.build.directory}/maven4/apache-maven</mavenHome>
+                                    <mavenHome>${project.build.directory}/maven4/apache-maven-${maven4.version}</mavenHome>
                                 </configuration>
                             </execution>
                         </executions>

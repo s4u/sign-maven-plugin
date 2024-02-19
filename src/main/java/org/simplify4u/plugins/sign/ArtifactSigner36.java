@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.artifact.Artifact;
 
 /**
- * Artifact signer - implementation for Maven &gt;= 3.6.x and &lt;4.0.0
+ * Artifact signer - implementation for Maven
  *
  * @author Slawomir Jaranowski
  */
