@@ -201,7 +201,12 @@
             <dependency>
                 <groupId>org.codehaus.plexus</groupId>
                 <artifactId>plexus-utils</artifactId>
-                <version>3.5.0</version>
+                <version>4.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-xml</artifactId>
+                <version>3.0.0</version>
             </dependency>
             <dependency>
                 <!-- https://bugs.eclipse.org/bugs/show_bug.cgi?id=552642 -->
@@ -261,6 +266,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-xml</artifactId>
         </dependency>
 
         <!-- testing -->
