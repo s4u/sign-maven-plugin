@@ -15,7 +15,7 @@ This plugin can replace **maven-gpg-plugin** in an easy way and provide new feat
 # Feature 
 
  - all the signing operations are done using `Bouncy Castle`
- - support Maven `3.6` and is ready for next version `4.0` of Maven  with `Consumer POM`
+ - support Maven `3.6` and is ready for next version `4.0` of Maven
  - support `subkey` for signing
  - easy to use on CI system, configuration can be provided by environment variables
  - key passphrase can be encrypted by standard Maven [Password Encryption](https://maven.apache.org/guides/mini/guide-encryption.html)
