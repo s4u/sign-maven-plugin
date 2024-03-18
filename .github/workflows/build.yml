@@ -15,10 +15,11 @@ jobs:
   build:
     name: Build
     uses: s4u/.github/.github/workflows/maven-build.yml@master
-
     secrets:
       SIGN_KEY:       ${{ secrets.SIGN_KEY }}
       SIGN_KEY_PASS:  ${{ secrets.SIGN_KEY_PASS }}
+      MAVEN_GPG_KEY: ${{ secrets.MAVEN_GPG_KEY }}
+      MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
       OSS_USER:       ${{ secrets.OSS_USER }}
       OSS_PASS:       ${{ secrets.OSS_PASS }}
       TECH_TOKEN:     ${{ secrets.TECH_TOKEN }}
