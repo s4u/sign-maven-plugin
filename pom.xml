@@ -149,7 +149,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.40</version>
+                <version>1.18.42</version>
             </dependency>
             <!-- Maven 3.x only support slf4j 1.7.x-->
             <dependency>
