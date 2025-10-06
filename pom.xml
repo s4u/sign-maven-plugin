@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.simplify4u</groupId>
         <artifactId>parent</artifactId>
-        <version>2.22.0</version>
+        <version>3.0.0</version>
         <relativePath />
     </parent>
 
