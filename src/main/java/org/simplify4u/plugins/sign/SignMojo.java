@@ -43,7 +43,14 @@ import org.simplify4u.plugins.sign.openpgp.PGPKeyInfo;
  *
  * @author Slawomir Jaranowski
  * @since 0.1.0
+ * @deprecated <code>sign-maven-plugin</code> is retired - please migrate to
+ * <a href="https://maven.apache.org/plugins/maven-gpg-plugin/">Apache Maven GPG Plugin</a>,
+ * which provides the same features: signing by the <code>Bouncy Castle</code> Java library,
+ * configuration by environment variables and support for Maven 4.
+ * See <a href="https://www.simplify4u.org/sign-maven-plugin/migration.html">Migration to
+ * maven-gpg-plugin</a>.
  */
+@Deprecated
 @Slf4j
 @Mojo(name = "sign", defaultPhase = LifecyclePhase.VERIFY, threadSafe = true)
 public class SignMojo extends AbstractMojo {
@@ -181,6 +188,9 @@ public class SignMojo extends AbstractMojo {
 
     @Override
     public void execute() {
+
+        LOGGER.warn("sign-maven-plugin is retired - please migrate to maven-gpg-plugin: "
+                + "https://www.simplify4u.org/sign-maven-plugin/migration.html");
 
         if (skip) {
             LOGGER.info("Sign - skip execution");

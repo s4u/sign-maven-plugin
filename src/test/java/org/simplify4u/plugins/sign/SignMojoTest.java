@@ -41,6 +41,7 @@ import org.simplify4u.plugins.sign.openpgp.PGPKeyInfo;
 import org.slf4j.Logger;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("deprecation") // SignMojo is deprecated - the plugin is retired
 class SignMojoTest {
 
     @Mock
