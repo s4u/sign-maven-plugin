@@ -342,6 +342,35 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-report-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <reportSets>
+                    <!--
+                        Project is retired, repository will be archived,
+                        so ci-management and issue-management reports are not generated.
+                        Report list inherited from parent can not be reduced - so whole
+                        inherited report set is skipped and needed reports are redefined below.
+                    -->
+                    <reportSet>
+                        <id>default</id>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </reportSet>
+                    <reportSet>
+                        <id>retired</id>
+                        <reports>
+                            <report>dependencies</report>
+                            <report>licenses</report>
+                            <report>plugins</report>
+                            <report>team</report>
+                            <report>scm</report>
+                            <report>summary</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
         </plugins>
     </reporting>
 
