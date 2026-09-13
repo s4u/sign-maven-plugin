@@ -7,10 +7,22 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=org.simplify4u.plugins%3Asign-maven-plugin&metric=coverage)](https://sonarcloud.io/dashboard?id=org.simplify4u.plugins%3Asign-maven-plugin)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=org.simplify4u.plugins%3Asign-maven-plugin&metric=ncloc)](https://sonarcloud.io/dashboard?id=org.simplify4u.plugins%3Asign-maven-plugin)
 
+> [!IMPORTANT]
+> **This plugin is retired.**
+>
+> Please migrate to [Apache Maven GPG Plugin](https://maven.apache.org/plugins/maven-gpg-plugin/) -
+> it now covers everything this plugin was created for: signing by the `Bouncy Castle` Java library
+> so no `gpg` executable is needed, key configuration by environment variables, and support for
+> Maven `4`.
+>
+> See [Migration to maven-gpg-plugin](https://www.simplify4u.org/sign-maven-plugin/migration.html)
+> for the option mapping and ready to use examples.
+>
+> No further releases are planned - see
+> [#195](https://github.com/s4u/sign-maven-plugin/issues/195) for the reasoning.
+
 Creates Open PGP / GPG signatures for all of the project's artifacts
 without any external software.
-
-This plugin can replace **maven-gpg-plugin** in an easy way and provide new features.
 
 # Feature 
 
