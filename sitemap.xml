@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://www.simplify4u.org/sign-maven-plugin/ci-management.html</loc>
-    </url>
-    <url>
         <loc>https://www.simplify4u.org/sign-maven-plugin/dependencies.html</loc>
     </url>
     <url>
@@ -13,13 +10,13 @@
         <loc>https://www.simplify4u.org/sign-maven-plugin/</loc>
     </url>
     <url>
-        <loc>https://www.simplify4u.org/sign-maven-plugin/issue-management.html</loc>
-    </url>
-    <url>
         <loc>https://www.simplify4u.org/sign-maven-plugin/key-prepare.html</loc>
     </url>
     <url>
         <loc>https://www.simplify4u.org/sign-maven-plugin/licenses.html</loc>
+    </url>
+    <url>
+        <loc>https://www.simplify4u.org/sign-maven-plugin/migration.html</loc>
     </url>
     <url>
         <loc>https://www.simplify4u.org/sign-maven-plugin/plugin-info.html</loc>
