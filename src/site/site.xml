@@ -23,6 +23,7 @@
             <item name="Introduction" href="index.html"/>
             <item name="Goals" href="plugin-info.html"/>
             <item name="Private key preparation" href="key-prepare.html"/>
+            <item name="Migration to maven-gpg-plugin" href="migration.html"/>
         </menu>
 
     </body>
