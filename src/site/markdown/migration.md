@@ -184,7 +184,5 @@ neither in the environment variable nor in the file - exactly what `skipNoKey` d
 relative path against the user home directory, while the `missing` activation needs a full path.
 Keep the two in sync.
 
-This is the setup used by [org.simplify4u:parent](https://github.com/s4u/parent/blob/master/pom.xml).
-
 Alternatively declare the signing execution in a profile activated only when you publish, or keep
 the plugin in the main build and pass `-Dgpg.skip=true` where no key is available.
