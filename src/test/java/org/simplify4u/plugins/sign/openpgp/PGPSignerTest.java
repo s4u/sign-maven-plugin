@@ -162,7 +162,7 @@ class PGPSignerTest {
         assertThatThrownBy(() -> pgpSigner.setKeyInfo(keyInfo))
                 .isExactlyInstanceOf(PGPSignerException.class)
                 .hasRootCauseExactlyInstanceOf(PGPException.class)
-                .hasMessage("org.bouncycastle.openpgp.PGPException: checksum mismatch at in checksum of 20 bytes");
+                .hasMessage("org.bouncycastle.openpgp.PGPException: checksum mismatch in checksum of 20 bytes");
     }
 
     @Test
